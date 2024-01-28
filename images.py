@@ -18,6 +18,7 @@ class HeroImage:
     mermaid = 'images/heroMermaid.png'
     jay = 'images/heroJay.png'
     snowflake = 'images/heroSnowflake.png'
+<<<<<<< HEAD
     gadget = 'images/heroGadget.png'
     all = [zeus, necro, mari, mermaid, jay, snowflake, gadget]
 
@@ -63,3 +64,6 @@ class UnitImage:
             ]
 
     all = common + rare + epic + legendary
+=======
+    all = [zeus, necro, mari, mermaid, jay, snowflake]
+>>>>>>> origin/main
