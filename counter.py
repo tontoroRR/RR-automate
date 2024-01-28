@@ -12,19 +12,12 @@ class Counter:
         self.op = Operation()
         pass
 
-<<<<<<< HEAD
-=======
-    def setWait(self, _wait):
-        pyautogui.PAUSE = _wait
-
->>>>>>> origin/main
     def setStyle(self, _style):
         self.style = _style
         self.op.setLocation(self.style.location)
         self.op.setWait(self.style.wait)
         return self
 
-<<<<<<< HEAD
     def openRanking(self):
         self.op.existClick(self.style.menu)
         self.op.existClick(self.style.lbBtn)
@@ -37,18 +30,6 @@ class Counter:
         hero = self.op.findAny(self.style.heros)
         units = self.op.findAny(self.style.units)
         pyautogui.press('esc')
-=======
-    def existClick(self, img):
-        if self.op.exists(img): self.op.click(img)
-
-    def openRanking(self):
-        self.existClick(self.style.menu)
-        self.existClick(self.style.tab)
-        self.existClick(self.style.banner)
-
-    def count(self):
-        pprint.pprint(self.style)
->>>>>>> origin/main
 
 class Operation:
     WAIT = 0.1
@@ -81,13 +62,8 @@ class Operation:
                 print("not fount ", img, " after ", wait, "(s)")
                 break
 
-<<<<<<< HEAD
     def __exists(self, img, wait = None):
         if (wait is None): wait = self.WAIT
-=======
-    def exists(self, img):
-        wait = self.WAIT
->>>>>>> origin/main
         print(wait)
         for i in range(int(wait*10)):
             try:
@@ -100,11 +76,7 @@ class Operation:
 
         return False
 
-<<<<<<< HEAD
     def __click(self, img):
-=======
-    def click(self, img):
->>>>>>> origin/main
         try:
             xy = self.los(img)
             pyautogui.click(pyautogui.center(xy))
@@ -112,7 +84,6 @@ class Operation:
             print(img, " not found in click")
             raise pyautogui.useImageNotFoundException
 
-<<<<<<< HEAD
     def existClick(self, img):
         if self.__exists(img): self.__click(img)
 
@@ -129,12 +100,6 @@ class Operation:
         return res
 
     @staticmethod
-=======
-    def moveTo(self, img):
-        xy = self.los(img)
-        pyautogui.moveTo(pyautogui.center(xy))
-
->>>>>>> origin/main
     def scrollUp():
         pyautogui.drag(0, -68*3, 1, button = "left")
         pyautogui.drag(0, -68*3, 0.65, button = "left")
