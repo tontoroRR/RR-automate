@@ -3,11 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-<<<<<<< HEAD
 .tool-version
 
-=======
->>>>>>> origin/main
 # C extensions
 *.so
 
