@@ -27,13 +27,13 @@ class UnitImage:
 
     # Rare
     chemist = 'images/unitChemist.png'
-    rare = []
+    rare = [ chemist ]
 
     # Epic
     mime = 'images/unitMime.png'
     portalMageMax = 'images/unitPortalMageMax.png'
 
-    epid = [ mime, portalMageMax ]
+    epic = [ mime, portalMageMax ]
 
     # Legendary
     # bruiser = ''
@@ -45,6 +45,8 @@ class UnitImage:
     frostMax = 'images/unitFrostMax.png'
     harleyquin = 'images/unitHQ.png'
     knightStatusMax = 'images/unitKnightStatusMax.png'
+    monk = 'images/unitMonk.png'
+    monkMax = 'images/unitMonkMax.png'
     meteorMax = 'images/unitMeteorMax.png'
     ridingHood = 'images/unitRidingHood.png'
     ridingHoodMax = 'images/unitRidingHoodMax.png'
@@ -57,9 +59,9 @@ class UnitImage:
     witchMax = 'images/unitWitchMax.png'
 
     legendary = [
-            cultist, demonHunterMax, dryad, dryadMax, frostMax, harleyquin, 
-            knightStatusMax, meteorMax, ridingHood, ridingHoodMax, scrapper,
-            seadogMax, spiritMasterMax, summoner, summonerMax, swordMax, witchMax
+            cultist, demonHunterMax, dryad, dryadMax, frostMax, harleyquin, knightStatusMax,
+            monk, monkMax, meteorMax, ridingHood, ridingHoodMax, scrapper, seadogMax,
+            spiritMasterMax, summoner, summonerMax, swordMax, witchMax
             ]
 
     all = common + rare + epic + legendary

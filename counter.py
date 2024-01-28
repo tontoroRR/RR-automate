@@ -24,11 +24,17 @@ class Counter:
         self.op.existClick(self.style.tab)
         self.op.existClick(self.style.banner)
 
+    def _filterFoundOnly(self, _dict):
+        return list(filter(lambda k: _dict[k] == 1, _dict.keys()))
+
     def count(self):
         pyautogui.move(0, 215) # move to first row
         pyautogui.click()
-        hero = self.op.findAny(self.style.heros)
-        units = self.op.findAny(self.style.units)
+        hero = self._filterFoundOnly(self.op.findAny(self.style.heros))
+        # self._filterFoundOnly(hero)
+        units = self._filterFoundOnly(self.op.findAny(self.style.units))
+        print(hero)
+        print(units)
         pyautogui.press('esc')
 
 class Operation:

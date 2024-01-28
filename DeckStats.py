@@ -61,6 +61,7 @@ class Style:
     location = LOCATION
     rowHeight = 68
     heros = HeroImage.all
+    units = UnitImage.all
 
 s = Style()
 
