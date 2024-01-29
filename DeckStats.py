@@ -10,6 +10,7 @@ LOCATION = (1275, 2, 647, 1020)
 
 heroCounts = {h: 0 for h in HeroImage.all}
 
+"""
 def findAny(ary, counts):
     res = []
     for img in ary:
@@ -21,6 +22,7 @@ def countHero():
     res = findAny(HeroImage.all, heroCounts)
     click(BtnImage.close)
     return res
+"""
 
 # make RR screen to front and fix position
 def activateRR():
@@ -29,6 +31,7 @@ def activateRR():
     windows.activateApp(APPNAME)
     time.sleep(0.2)
 
+"""
 def countLeaderBoard(img):
     if exists(img):
         moveTo(img)
@@ -49,17 +52,19 @@ def countLeaderBoard(img):
 
     print(heroCounts)
     pyautogui.PAUSE = 0.1
+"""
 
 class Style:
-    pass
     menu = BtnImage.menuWithInfo
     lbBtn = BtnImage.leaderBoards
     tab = BtnImage.maxCritTab
     banner = LabelImage.maxCrit #totalTrophy
+    badge1st = LabelImage.maxCritBadge1st
     wait = 1 # wait for 1 sec
     pause = 0.2
     location = LOCATION
     rowHeight = 68
+    linesInPage = 2
     heros = HeroImage.all
     units = UnitImage.all
 

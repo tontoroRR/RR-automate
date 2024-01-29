@@ -9,7 +9,10 @@ class BtnImage:
 
 class LabelImage:
     totalTrophy = 'images/totaltrophies.png'
+    totalTrophyBadge1st = 'images/totalTrophyBadge1st.png'
     maxCrit = 'images/maxCrit.png'
+    maxCritBadge1st = 'images/maxCrit1stBadge.png'
+
 
 class HeroImage:
     zeus = 'images/heroZeus.png'
@@ -65,3 +68,19 @@ class UnitImage:
             ]
 
     all = common + rare + epic + legendary
+
+class Converter:
+    __DICT: dict = {
+            'images/': '',
+            'unit' : '',
+            'hero' : '',
+            '.png' : '',
+            'Max' : '(Max)',
+            'HQ' : 'Harleyquin',
+            }
+    @staticmethod
+    def convert(_name: str):
+        name = _name
+        for k, v in Converter.__DICT.items():
+            name = name.replace(k, v)
+        return name
