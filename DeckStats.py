@@ -8,22 +8,6 @@ APPNAME = 'Rush Royale'
 LOCATION = (1275, 2, 647, 1020)
 # LOCATION_L = (1275, 2, 647, 4200)
 
-heroCounts = {h: 0 for h in HeroImage.all}
-
-"""
-def findAny(ary, counts):
-    res = []
-    for img in ary:
-        if exists(img): counts[img] += 1
-    return res
-
-def countHero():
-    pyautogui.click(pyautogui.position())
-    res = findAny(HeroImage.all, heroCounts)
-    click(BtnImage.close)
-    return res
-"""
-
 # make RR screen to front and fix position
 def activateRR():
     windows.moveApp(APPNAME, LOCATION)
@@ -31,31 +15,9 @@ def activateRR():
     windows.activateApp(APPNAME)
     time.sleep(0.2)
 
-"""
-def countLeaderBoard(img):
-    if exists(img):
-        moveTo(img)
-        pyautogui.move(0, 215)
-        first_pos = pyautogui.position()
-        pyautogui.PAUSE = 0.1
-        for s in range(1):
-            for l in range(7):
-                pos = pyautogui.position()
-                res = countHero()
-                pyautogui.moveTo(pos)
-                if l == 6:
-                    pyautogui.scroll(68*7)
-                    pyautogui.moveTo(first_pos)
-                else:
-                    pyautogui.move(0, 68)
-                time.sleep(0.3)
-
-    print(heroCounts)
-    pyautogui.PAUSE = 0.1
-"""
-
 class Style:
     menu = BtnImage.menuWithInfo
+    battleBtn = BtnImage.bottomBattle
     lbBtn = BtnImage.leaderBoards
     tab = BtnImage.maxCritTab
     banner = LabelImage.maxCrit #totalTrophy
@@ -63,14 +25,25 @@ class Style:
     wait = 1 # wait for 1 sec
     pause = 0.2
     location = LOCATION
-    rowHeight = 68
-    linesInPage = 2
+    lineHeight = 68
+    linesInPage = 7
+    lastLine = 1
     heros = HeroImage.all
     units = UnitImage.all
 
 s = Style()
 
+start = time.time()
 activateRR()
 c = Counter().setStyle(s)
 c.openRanking()
-c.count()
+ds = c.count()
+c.backToTop()
+for d in ds:
+    print(d)
+
+for d in ds:
+    if len(d[1]) != 1 or len(d[2]) != 5:
+        print(error, d)
+
+print(time.time() - start)

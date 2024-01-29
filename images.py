@@ -6,6 +6,7 @@ class BtnImage:
     close = 'images/closeBtn.png'
     maxCritTab = 'images/maxCritTab.png'
     totalTrophyTab = 'images/totalTrophyTab.png'
+    bottomBattle = 'images/bottomBattleBtn.png'
 
 class LabelImage:
     totalTrophy = 'images/totaltrophies.png'
@@ -16,13 +17,14 @@ class LabelImage:
 
 class HeroImage:
     zeus = 'images/heroZeus.png'
+    zeus_ALT =  'images/heroZeus_ALT_.png'
     necro = 'images/heroNecro.png'
     mari = 'images/heroMari.png'
     mermaid = 'images/heroMermaid.png'
     jay = 'images/heroJay.png'
     snowflake = 'images/heroSnowflake.png'
     gadget = 'images/heroGadget.png'
-    all = [zeus, necro, mari, mermaid, jay, snowflake, gadget]
+    all = [zeus, zeus_ALT, necro, mari, mermaid, jay, snowflake, gadget]
 
 class UnitImage:
     # Common
@@ -30,7 +32,8 @@ class UnitImage:
 
     # Rare
     chemist = 'images/unitChemist.png'
-    rare = [ chemist ]
+    sharpshooterMax = 'images/unitSharpshooterMax.png'
+    rare = [ chemist, sharpshooterMax ]
 
     # Epic
     mime = 'images/unitMime.png'
@@ -42,29 +45,65 @@ class UnitImage:
     # bruiser = ''
     cultist = 'images/unitCultist.png'
     # demonHunter = ''
+    bansheeMax = 'images/unitBansheeMax.png'
+    clock = 'images/unitClock.png'
+    corsair = 'images/unitCorsair.png'
+    cultist = 'images/unitCultist.png'
     demonHunterMax = 'images/unitDemonHunterMax.png'
     dryad = 'images/unitDryad.png'
     dryadMax = 'images/unitDryadMax.png'
     frostMax = 'images/unitFrostMax.png'
     harleyquin = 'images/unitHQ.png'
-    knightStatusMax = 'images/unitKnightStatusMax.png'
+    inquisitorMax = 'images/unitInquisitorMax.png'
+    knightStatueMax = 'images/unitKnightStatueMax.png'
+    meteorMax = 'images/unitMeteorMax.png'
+    minotaurMax = 'images/unitMinotaurMax.png'
     monk = 'images/unitMonk.png'
     monkMax = 'images/unitMonkMax.png'
-    meteorMax = 'images/unitMeteorMax.png'
     ridingHood = 'images/unitRidingHood.png'
     ridingHoodMax = 'images/unitRidingHoodMax.png'
     scrapper = 'images/unitScrapper.png'
     seadogMax = 'images/unitSeadogMax.png'
+    shaman = 'images/unitShaman.png'
     spiritMasterMax = 'images/unitSpiritMasterMax.png'
     summoner = 'images/unitSummoner.png'
     summonerMax = 'images/unitSummonerMax.png'
     swordMax = 'images/unitSwordMax.png'
+    trapper = 'images/unitTrapper.png'
     witchMax = 'images/unitWitchMax.png'
 
     legendary = [
-            cultist, demonHunterMax, dryad, dryadMax, frostMax, harleyquin, knightStatusMax,
-            monk, monkMax, meteorMax, ridingHood, ridingHoodMax, scrapper, seadogMax,
-            spiritMasterMax, summoner, summonerMax, swordMax, witchMax
+            # banshee,
+            bansheeMax,
+            # bruiser, bruiserMax, bladeDancer, bladeDancerMax, boreas, boreasMax,
+            clock, corsair, cultist,
+            # cultistMax, demonHunter,
+            demonHunterMax,
+            # demonologist, demonologistMax,
+            dryad, dryadMax,
+            # frost,
+            frostMax, harleyquin,
+            # harleyquinMax, inquisitor,
+            inquisitorMax,
+            # genie, genieMax, unithex, unithexMax, knightStatue,
+            knightStatueMax,
+            # meteor,
+            meteorMax,
+            # minotaur,
+            minotaurMax, monk, monkMax,
+            ridingHood, ridingHoodMax,
+            # robot, robotMax,
+            scrapper,
+            # stasis, seadog,
+            seadogMax, shaman,
+            # spiritMaster,
+            spiritMasterMax, summoner, summonerMax,
+            # tesla, teslaMax,
+            trapper,
+            # sword,
+            swordMax,
+            # witch,
+            witchMax
             ]
 
     all = common + rare + epic + legendary
@@ -77,6 +116,7 @@ class Converter:
             '.png' : '',
             'Max' : '(Max)',
             'HQ' : 'Harleyquin',
+            '_ALT_' : '',
             }
     @staticmethod
     def convert(_name: str):

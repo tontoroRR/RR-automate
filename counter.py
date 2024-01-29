@@ -34,13 +34,16 @@ class Counter:
         pyautogui.move(0, 215) # move to first row
 
     def _filterFoundOnly(self, _dict):
-        return list(map(Cv.convert, filter(lambda k: _dict[k] == 1, _dict.keys())))
+        l = list(map(Cv.convert, filter(lambda k: _dict[k] == 1, _dict.keys())))
+        return list(set(l))
 
     def getUserDeck(self, rank: int):
-        hero = self._filterFoundOnly(self.op.findAny(self.style.heros))
-        units = self._filterFoundOnly(self.op.findAny(self.style.units))
-        print(hero)
-        print(units)
+        hero = []
+        units = []
+        # hero = self._filterFoundOnly(self.op.findAny(self.style.heros))
+        # units = self._filterFoundOnly(self.op.findAny(self.style.units))
+        hero = self._filterFoundOnly(asyncio.run(self.op.findAnyAsync(self.style.heros)))
+        units = self._filterFoundOnly(asyncio.run(self.op.findAnyAsync(self.style.units)))
         return (rank, hero, units)
 
     def count(self):
@@ -49,9 +52,22 @@ class Counter:
             pyautogui.click()
             decks.append(self.getUserDeck(i + 1))
             pyautogui.press('esc')
-            pyautogui.move(0, self.style.rowHeight)
+            pyautogui.move(0, self.style.lineHeight)
+            print(i + 1)
+
+        for i in range(self.style.linesInPage, self.style.lastLine):
+            pyautogui.click()
+            decks.append(self.getUserDeck(i + 1))
+            pyautogui.press('esc')
+            print(i + 1)
+            self.op.scrollUp(self.style.lineHeight)
 
         return decks
+
+    def backToTop(self):
+        while not(self.op.exists(self.style.battleBtn)):
+            pyautogui.press('esc')
+
 
 class Operation:
     WAIT = 0.1
@@ -110,6 +126,9 @@ class Operation:
             self.__dp(img, " not found in click")
             raise pyautogui.useImageNotFoundException
 
+    def exists(self, img):
+        return self.__exists(img)
+
     def existClick(self, img):
         if self.__exists(img): self.__click(img)
 
@@ -117,16 +136,25 @@ class Operation:
         xy = self.__los(img)
         pyautogui.moveTo(pyautogui.center(xy))
 
-    
+    def scrollUp(self, _dy: int):
+        dy = _dy + 15 # - 7
+        pyautogui.mouseDown()
+        pyautogui.move(0, -1 * dy, 0.2)
+        # , pyautogui.easeOutQuad)
+        time.sleep(0.1)
+        pyautogui.mouseUp()
+        pyautogui.move(0, dy)
+
+    async def findAnyAsync(self, imgs):
+        res = {h: 0 for h in imgs}
+        async def afunc(_img, _res: dict = res):
+            if self.__exists(_img, 0.1): _res[_img] = 1
+        tasks = list(map(afunc, imgs))
+        await asyncio.gather(*tasks)
+        return res
 
     def findAny(self, imgs):
         res = {h: 0 for h in imgs}
         for img in imgs:
             if self.__exists(img, 0.1): res[img] = 1
         return res
-
-    @staticmethod
-    def scrollUp():
-        pyautogui.drag(0, -68*3, 1, button = "left")
-        pyautogui.drag(0, -68*3, 0.65, button = "left")
-        time.sleep(1)
