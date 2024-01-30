@@ -1,7 +1,10 @@
-import pprint
-import asyncio
 import pyautogui
 import time
+
+import asyncio
+import threading
+from collections import deque
+
 from images import Converter as Cv
 
 pyautogui.PAUSE = 0.2
@@ -37,13 +40,29 @@ class Counter:
         l = list(map(Cv.convert, filter(lambda k: _dict[k] == 1, _dict.keys())))
         return list(set(l))
 
+    @staticmethod
+    def convert(ary: list):
+        l = list(map(Cv.convert, ary))
+        return list(set(l))
+
     def getUserDeck(self, rank: int):
+        m = 0
+        # s = time.time()
         hero = []
         units = []
-        # hero = self._filterFoundOnly(self.op.findAny(self.style.heros))
-        # units = self._filterFoundOnly(self.op.findAny(self.style.units))
-        hero = self._filterFoundOnly(asyncio.run(self.op.findAnyAsync(self.style.heros)))
-        units = self._filterFoundOnly(asyncio.run(self.op.findAnyAsync(self.style.units)))
+        if m == 1:
+            # Normal
+            hero = self.convert(self.op.findAny(self.style.heros))
+            units = self.convert(self.op.findAny(self.style.units))
+        elif m == 2:
+            # Async
+            hero = self.convert(asyncio.run(self.op.findAnyAsync(self.style.heros)))
+            units = self.convert(asyncio.run(self.op.findAnyAsync(self.style.units)))
+        else:
+            # Threading
+            hero = self.convert(self.op.findAnyThread(self.style.heros))
+            units = self.convert(self.op.findAnyThread(self.style.units))
+        # print(time.time() - s)
         return (rank, hero, units)
 
     def count(self):
@@ -53,15 +72,11 @@ class Counter:
             decks.append(self.getUserDeck(i + 1))
             pyautogui.press('esc')
             pyautogui.move(0, self.style.lineHeight)
-            print(i + 1)
-
         for i in range(self.style.linesInPage, self.style.lastLine):
             pyautogui.click()
             decks.append(self.getUserDeck(i + 1))
             pyautogui.press('esc')
-            print(i + 1)
             self.op.scrollUp(self.style.lineHeight)
-
         return decks
 
     def backToTop(self):
@@ -140,21 +155,54 @@ class Operation:
         dy = _dy + 15 # - 7
         pyautogui.mouseDown()
         pyautogui.move(0, -1 * dy, 0.2)
-        # , pyautogui.easeOutQuad)
         time.sleep(0.1)
         pyautogui.mouseUp()
         pyautogui.move(0, dy)
 
-    async def findAnyAsync(self, imgs):
-        res = {h: 0 for h in imgs}
-        async def afunc(_img, _res: dict = res):
-            if self.__exists(_img, 0.1): _res[_img] = 1
-        tasks = list(map(afunc, imgs))
-        await asyncio.gather(*tasks)
+    def findAny(self, imgs):
+        q = deque()
+        for i in imgs: q.append({i: 0})
+        # res = {img: 0 for img in imgs}
+        #for img in imgs:
+        #    if self.__exists(img, 0.1): res[img] = 1
+        for d in q:
+            k = list(d.keys())[0]
+            if self.__exists(k, 0.1): d[k] = 1
+        res = []
+        for d in q:
+            for k, v in d.items():
+                if v > 0: res.append(k)
         return res
 
-    def findAny(self, imgs):
-        res = {h: 0 for h in imgs}
-        for img in imgs:
-            if self.__exists(img, 0.1): res[img] = 1
+    async def findAnyAsync(self, imgs):
+        q = deque()
+        for i in imgs: q.append({i: 0})
+        async def afunc(_d:dict):
+            k = list(_d.keys())[0]
+            if self.__exists(k, 0.1): _d[k] = 1
+        tasks = list(map(afunc, q))
+        await asyncio.gather(*tasks)
+        res = []
+        for d in q:
+            for k, v in d.items():
+                if v > 0: res.append(k)
         return res
+
+    def findAnyThread(self, imgs):
+        q = deque()
+        for i in imgs: q.append({i: 0})
+        def tfunc(_d:dict):
+            k = list(_d.keys())[0]
+            if self.__exists(k, 0.1): _d[k] = 1
+        ts = []
+        for d in q: ts.append(
+                    threading.Thread(target=tfunc, args=(d,))
+                )
+        for t in ts: t.start()
+        for t in ts: t.join()
+        res = []
+        for d in q:
+            for k, v in d.items():
+                if v > 0: res.append(k)
+        return res
+
