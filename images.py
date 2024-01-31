@@ -20,15 +20,18 @@ class HeroImage:
     zeus_ALT =  'images/heroZeus_ALT_.png'
     necro = 'images/heroNecro.png'
     mari = 'images/heroMari.png'
+    mari_ALT = 'images/heroMari_ALT_.png'
     mermaid = 'images/heroMermaid.png'
     jay = 'images/heroJay.png'
     snowflake = 'images/heroSnowflake.png'
     gadget = 'images/heroGadget.png'
-    all = [zeus, zeus_ALT, necro, mari, mermaid, jay, snowflake, gadget]
+    all = [ zeus, zeus_ALT, necro, mari, mari_ALT, mermaid, jay, snowflake, gadget ]
 
 class UnitImage:
     # Common
-    common = []
+    hunterMax = 'images/unitHunterMax.png'
+    rogueMax = 'images/unitRogueMax.png'
+    common = [ hunterMax, rogueMax ]
 
     # Rare
     chemist = 'images/unitChemist.png'
@@ -36,13 +39,16 @@ class UnitImage:
     rare = [ chemist, sharpshooterMax ]
 
     # Epic
+    engineerMax = 'images/unitEngineerMax.png'
     mime = 'images/unitMime.png'
+    portalKeeper = 'images/unitPortalKeeper.png'
     portalMageMax = 'images/unitPortalMageMax.png'
 
-    epic = [ mime, portalMageMax ]
+    epic = [ engineerMax, mime, portalKeeper, portalMageMax ]
 
     # Legendary
     # bruiser = ''
+    bruiserMax = 'images/unitBruiserMax.png'
     cultist = 'images/unitCultist.png'
     # demonHunter = ''
     bansheeMax = 'images/unitBansheeMax.png'
@@ -50,9 +56,12 @@ class UnitImage:
     corsair = 'images/unitCorsair.png'
     cultist = 'images/unitCultist.png'
     demonHunterMax = 'images/unitDemonHunterMax.png'
+    demonHunterMax_ALT = 'images/unitDemonHunterMax_ALT_.png'
     dryad = 'images/unitDryad.png'
     dryadMax = 'images/unitDryadMax.png'
+    dryadMax_ALT = 'images/unitDryadMax_ALT_.png'
     frostMax = 'images/unitFrostMax.png'
+    genieMax = 'images/unitGenieMax.png'
     harleyquin = 'images/unitHQ.png'
     inquisitorMax = 'images/unitInquisitorMax.png'
     knightStatueMax = 'images/unitKnightStatueMax.png'
@@ -69,20 +78,24 @@ class UnitImage:
     summoner = 'images/unitSummoner.png'
     summonerMax = 'images/unitSummonerMax.png'
     swordMax = 'images/unitSwordMax.png'
+    teslaMax = 'images/unitTeslaMax.png'
     trapper = 'images/unitTrapper.png'
+    trapper_ALT = 'images/unitTrapper_ALT_.png'
     witchMax = 'images/unitWitchMax.png'
 
     legendary = [
             # banshee,
             bansheeMax,
-            # bruiser, bruiserMax, bladeDancer, bladeDancerMax, boreas, boreasMax,
+            # bruiser, 
+            bruiserMax,
+            # bladeDancer, bladeDancerMax, boreas, boreasMax,
             clock, corsair, cultist,
             # cultistMax, demonHunter,
-            demonHunterMax,
+            demonHunterMax, demonHunterMax_ALT,
             # demonologist, demonologistMax,
-            dryad, dryadMax,
+            dryad, dryadMax, dryadMax_ALT,
             # frost,
-            frostMax, harleyquin,
+            frostMax, genieMax, harleyquin,
             # harleyquinMax, inquisitor,
             inquisitorMax,
             # genie, genieMax, unithex, unithexMax, knightStatue,
@@ -98,8 +111,8 @@ class UnitImage:
             seadogMax, shaman,
             # spiritMaster,
             spiritMasterMax, summoner, summonerMax,
-            # tesla, teslaMax,
-            trapper,
+            # tesla,
+            teslaMax, trapper, trapper_ALT,
             # sword,
             swordMax,
             # witch,

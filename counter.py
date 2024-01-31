@@ -63,20 +63,18 @@ class Counter:
             hero = self.convert(self.op.findAnyThread(self.style.heros))
             units = self.convert(self.op.findAnyThread(self.style.units))
         # print(time.time() - s)
-        return (rank, hero, units)
+
+        return (rank, hero, sorted(units))
 
     def count(self):
         decks = []
-        for i in range(self.style.linesInPage):
+        for n in range(1, self.style.lastLine + 1):
             pyautogui.click()
-            decks.append(self.getUserDeck(i + 1))
+            decks.append(self.getUserDeck(n))
             pyautogui.press('esc')
             pyautogui.move(0, self.style.lineHeight)
-        for i in range(self.style.linesInPage, self.style.lastLine):
-            pyautogui.click()
-            decks.append(self.getUserDeck(i + 1))
-            pyautogui.press('esc')
-            self.op.scrollUp(self.style.lineHeight)
+            if n % self.style.linesInPage == 0:
+                self.op.scrollUpSlow(self.style.lineHeight * self.style.linesInPage)
         return decks
 
     def backToTop(self):
@@ -150,6 +148,14 @@ class Operation:
     def move(self, img):
         xy = self.__los(img)
         pyautogui.moveTo(pyautogui.center(xy))
+
+    def scrollUpSlow(self, _dy: int):
+        diff = 50
+        pyautogui.mouseDown()
+        pyautogui.move(0, -1 * _dy - diff, 0.6)
+        time.sleep(0.5)
+        pyautogui.mouseUp()
+        pyautogui.move(0, diff)
 
     def scrollUp(self, _dy: int):
         dy = _dy + 15 # - 7

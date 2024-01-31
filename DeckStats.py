@@ -3,9 +3,7 @@ import datetime
 import windows
 from images import *
 from counter import Counter
-
-import parallel
-
+import easygui
 
 APPNAME = 'Rush Royale'
 LOCATION = (1275, 2, 647, 1020)
@@ -28,9 +26,9 @@ class Style:
     wait = 1 # wait for 1 sec
     pause = 0.2
     location = LOCATION
-    lineHeight = 68
-    linesInPage = 3
-    lastLine = 3
+    lineHeight = 67
+    linesInPage = 7
+    lastLine = 8
     heros = HeroImage.all
     units = UnitImage.all
 
@@ -54,3 +52,4 @@ with open(path, mode='x') as f:
     # f.writelines(",".join(d))
             
 c.backToTop()
+easygui.msgbox("データ取得完了!")
