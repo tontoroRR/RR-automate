@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 .tool-version
+secrets/
 
 # C extensions
 *.so
