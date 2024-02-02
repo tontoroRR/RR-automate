@@ -13,7 +13,8 @@ class LabelImage:
     totalTrophyBadge1st = 'images/totalTrophyBadge1st.png'
     maxCrit = 'images/maxCrit.png'
     maxCritBadge1st = 'images/maxCrit1stBadge.png'
-
+    cards = 'images/cardsLabel.png'
+    bestPlayer = 'images/bestPlayer.png'
 
 class HeroImage:
     zeus = 'images/heroZeus.png'

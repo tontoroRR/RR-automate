@@ -1,3 +1,6 @@
 pyautogui
 opencv_python
 easygui
+gspread
+oauth2client
+python-dotenv

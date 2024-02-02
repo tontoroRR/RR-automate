@@ -5,7 +5,7 @@ import asyncio
 import threading
 from collections import deque
 
-from images import Converter as Cv
+from modules.images import Converter as Cv
 
 pyautogui.PAUSE = 0.2
 
@@ -17,6 +17,7 @@ class Deck:
 class Counter:
     style = None
     op = None
+    cardY = 500
 
     def __init__(self):
         self.op = Operation()
@@ -26,7 +27,6 @@ class Counter:
         self.style = _style
         self.op.setLocation(self.style.location)
         self.op.setWait(self.style.wait)
-        return self
 
     def openRanking(self):
         self.op.existClick(self.style.menu)
@@ -70,7 +70,10 @@ class Counter:
         decks = []
         for n in range(1, self.style.lastLine + 1):
             pyautogui.click()
-            decks.append(self.getUserDeck(n))
+            self.op.dragImageTo(-1, self.cardY, self.style.cards)
+            d = self.getUserDeck(n)
+            # yeld(d)
+            decks.append(d)
             pyautogui.press('esc')
             pyautogui.move(0, self.style.lineHeight)
             if n % self.style.linesInPage == 0:
@@ -103,7 +106,7 @@ class Operation:
 
     def __dp(self, *values: object):
         if self.DEBUG:
-            print(v)
+            print(values)
 
     def wait(self, img, _wait = None): # default wait for 10 sec
         wait = self.LONG_WAIT if (_wait is None) else _wait
@@ -116,7 +119,7 @@ class Operation:
                 pass
             if ((time.time() - start) > wait):
                 self.__dp("not fount ", img, " after ", wait, "(s)")
-                break
+                raise pyautogui.ImageNotFoundException
 
     def __exists(self, img, wait = None):
         if (wait is None): wait = self.WAIT
@@ -145,9 +148,21 @@ class Operation:
     def existClick(self, img):
         if self.__exists(img): self.__click(img)
 
-    def move(self, img):
-        xy = self.__los(img)
-        pyautogui.moveTo(pyautogui.center(xy))
+    def dragImageTo(self, x, y, img):
+        startPos = pyautogui.position()
+        self.wait(img)
+        pos = pyautogui.center(self.__los(img))
+        if pos[1] <= y:
+            return
+        else:
+            pyautogui.mouseDown(pos)
+            if (x == -1): x = pos[0]
+            if (y == -1): y = pos[1]
+            pyautogui.moveTo(x, y, 0.5)
+            time.sleep(0.5)
+            pyautogui.mouseUp()
+            pyautogui.moveTo(startPos)
+
 
     def scrollUpSlow(self, _dy: int):
         diff = 50
@@ -157,20 +172,9 @@ class Operation:
         pyautogui.mouseUp()
         pyautogui.move(0, diff)
 
-    def scrollUp(self, _dy: int):
-        dy = _dy + 15 # - 7
-        pyautogui.mouseDown()
-        pyautogui.move(0, -1 * dy, 0.2)
-        time.sleep(0.1)
-        pyautogui.mouseUp()
-        pyautogui.move(0, dy)
-
     def findAny(self, imgs):
         q = deque()
         for i in imgs: q.append({i: 0})
-        # res = {img: 0 for img in imgs}
-        #for img in imgs:
-        #    if self.__exists(img, 0.1): res[img] = 1
         for d in q:
             k = list(d.keys())[0]
             if self.__exists(k, 0.1): d[k] = 1
@@ -211,4 +215,3 @@ class Operation:
             for k, v in d.items():
                 if v > 0: res.append(k)
         return res
-

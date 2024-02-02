@@ -6,7 +6,7 @@ __pycache__/
 .tool-version
 secrets/
 
-./20*.csv
+20*.csv
 
 # C extensions
 *.so

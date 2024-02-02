@@ -1,9 +1,11 @@
 import time
 import datetime
-import windows
-from images import *
-from counter import Counter
 import easygui
+
+import modules.windows as windows
+from modules.images import *
+from modules.counter import Counter
+from modules.gsheet import *
 
 APPNAME = 'Rush Royale'
 LOCATION = (1275, 2, 647, 1020)
@@ -23,33 +25,43 @@ class Style:
     tab = BtnImage.maxCritTab
     banner = LabelImage.maxCrit #totalTrophy
     badge1st = LabelImage.maxCritBadge1st
+    cards = LabelImage.cards
     wait = 1 # wait for 1 sec
     pause = 0.2
     location = LOCATION
     lineHeight = 67
     linesInPage = 7
-    lastLine = 8
+    lastLine = 10
     heros = HeroImage.all
     units = UnitImage.all
 
 s = Style()
 
 activateRR()
-c = Counter().setStyle(s)
+c = Counter()
+c.setStyle(s)
 c.openRanking()
 
 ds = c.count()
+c.backToTop()
 
 path = datetime.datetime.now().strftime("%Y%m%d-%H%M%S.csv")
+
+# create google sheet
+name = datetime.datetime.now().strftime("%Y%m%d")
+ss = Spreadsheet()
+ws = ss.getSheet(name) or ss.createSheet(name)
+
 with open(path, mode='x') as f:
+    l = 1
     for _d in ds:
         d = []
         for e in _d:
             d += e if type(e).__name__ == 'list' else [e]
         if len(_d[1]) != 1 or len(_d[2]) != 5: d += ["error"]
         d = list(map(str, d))
-        f.write(",".join(d) + "\n")
-    # f.writelines(",".join(d))
+        ws.update("A" + str(l), [d])
+        l += 1
+        # f.write(",".join(d) + "\n")
             
-c.backToTop()
-easygui.msgbox("データ取得完了!")
+# easygui.msgbox("データ取得完了!")
