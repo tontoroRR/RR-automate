@@ -4,7 +4,8 @@ __pycache__/
 *$py.class
 
 .tool-version
-secrets/
+secrets/*
+!secrets/README.md
 
 20*.csv
 
