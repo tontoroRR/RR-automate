@@ -15,18 +15,22 @@ class LabelImage:
     maxCritBadge1st = 'images/maxCrit1stBadge.png'
     cards = 'images/cardsLabel.png'
     bestPlayer = 'images/bestPlayer.png'
+    top90 = 'images/top90.png'
 
 class HeroImage:
     zeus = 'images/heroZeus.png'
     zeus_ALT =  'images/heroZeus_ALT_.png'
     necro = 'images/heroNecro.png'
+    necro_ALT = 'images/heroNecro_ALT_.png'
     mari = 'images/heroMari.png'
     mari_ALT = 'images/heroMari_ALT_.png'
     mermaid = 'images/heroMermaid.png'
     jay = 'images/heroJay.png'
     snowflake = 'images/heroSnowflake.png'
     gadget = 'images/heroGadget.png'
-    all = [ zeus, zeus_ALT, necro, mari, mari_ALT, mermaid, jay, snowflake, gadget ]
+    trickster = 'images/heroTrickster.png'
+    all = [ zeus, zeus_ALT, necro, necro_ALT, mari, mari_ALT, 
+           mermaid, jay, snowflake, gadget, trickster ]
 
 class UnitImage:
     # Common
@@ -44,18 +48,20 @@ class UnitImage:
     mime = 'images/unitMime.png'
     portalKeeper = 'images/unitPortalKeeper.png'
     portalMageMax = 'images/unitPortalMageMax.png'
-
-    epic = [ engineerMax, mime, portalKeeper, portalMageMax ]
+    reaperMax = 'images/unitReaperMax.png'
+    epic = [ engineerMax, mime, portalKeeper, portalMageMax, reaperMax]
 
     # Legendary
-    # bruiser = ''
+    bansheeMax = 'images/unitBansheeMax.png'
+    bladeDancerMax = 'images/unitBladeDancerMax.png'
     bruiserMax = 'images/unitBruiserMax.png'
     cultist = 'images/unitCultist.png'
     # demonHunter = ''
-    bansheeMax = 'images/unitBansheeMax.png'
     clock = 'images/unitClock.png'
+    clock_ALT = 'images/unitClock_ALT_.png'
     corsair = 'images/unitCorsair.png'
     cultist = 'images/unitCultist.png'
+    cultistMax = 'images/unitCultistMax.png'
     demonHunterMax = 'images/unitDemonHunterMax.png'
     demonHunterMax_ALT = 'images/unitDemonHunterMax_ALT_.png'
     dryad = 'images/unitDryad.png'
@@ -63,7 +69,9 @@ class UnitImage:
     dryadMax_ALT = 'images/unitDryadMax_ALT_.png'
     frostMax = 'images/unitFrostMax.png'
     genieMax = 'images/unitGenieMax.png'
+    genie = 'images/unitGenieMax.png'
     harleyquin = 'images/unitHQ.png'
+    harleyquin_ALT = 'images/unitHQ_ALT_.png'
     inquisitorMax = 'images/unitInquisitorMax.png'
     knightStatueMax = 'images/unitKnightStatueMax.png'
     meteorMax = 'images/unitMeteorMax.png'
@@ -72,7 +80,9 @@ class UnitImage:
     monkMax = 'images/unitMonkMax.png'
     ridingHood = 'images/unitRidingHood.png'
     ridingHoodMax = 'images/unitRidingHoodMax.png'
+    robotMax = 'images/unitRobotMax.png'
     scrapper = 'images/unitScrapper.png'
+    seadog = 'images/unitSeadog.png'
     seadogMax = 'images/unitSeadogMax.png'
     shaman = 'images/unitShaman.png'
     spiritMasterMax = 'images/unitSpiritMasterMax.png'
@@ -83,20 +93,19 @@ class UnitImage:
     trapper = 'images/unitTrapper.png'
     trapper_ALT = 'images/unitTrapper_ALT_.png'
     witchMax = 'images/unitWitchMax.png'
-
     legendary = [
             # banshee,
             bansheeMax,
+            bladeDancerMax,
+            # bladeDancer, boreas, boreasMax,
             # bruiser, 
-            bruiserMax,
-            # bladeDancer, bladeDancerMax, boreas, boreasMax,
-            clock, corsair, cultist,
-            # cultistMax, demonHunter,
+            bruiserMax, clock, clock_ALT, corsair, cultist, cultistMax,
+            # demonHunter,
             demonHunterMax, demonHunterMax_ALT,
             # demonologist, demonologistMax,
             dryad, dryadMax, dryadMax_ALT,
             # frost,
-            frostMax, genieMax, harleyquin,
+            frostMax, genie, genieMax, harleyquin, harleyquin_ALT,
             # harleyquinMax, inquisitor,
             inquisitorMax,
             # genie, genieMax, unithex, unithexMax, knightStatue,
@@ -104,12 +113,11 @@ class UnitImage:
             # meteor,
             meteorMax,
             # minotaur,
-            minotaurMax, monk, monkMax,
-            ridingHood, ridingHoodMax,
-            # robot, robotMax,
-            scrapper,
-            # stasis, seadog,
-            seadogMax, shaman,
+            minotaurMax, monk, monkMax, ridingHood, ridingHoodMax,
+            # robot,
+            robotMax, scrapper,
+            # stasis,
+            seadog, seadogMax, shaman,
             # spiritMaster,
             spiritMasterMax, summoner, summonerMax,
             # tesla,

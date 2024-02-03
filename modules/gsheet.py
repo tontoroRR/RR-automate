@@ -38,3 +38,9 @@ class Worksheet:
     
     def update(self, range_name, values):
         self.ws.update(range_name=range_name, values=values)
+    
+    def clear(self, range):
+        self.ws.batch_clear(range)
+    
+    def clearAll(self):
+        self.ws.clear()
