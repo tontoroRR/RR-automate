@@ -6,6 +6,7 @@ __pycache__/
 .tool-version
 secrets/*
 !secrets/README.md
+tools/.env*
 
 20*.csv
 

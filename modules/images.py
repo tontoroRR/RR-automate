@@ -73,6 +73,7 @@ class UnitImage:
     harleyquin = 'images/unitHQ.png'
     harleyquin_ALT = 'images/unitHQ_ALT_.png'
     inquisitorMax = 'images/unitInquisitorMax.png'
+    knightStatue = 'images/unitKnightStatue.png'
     knightStatueMax = 'images/unitKnightStatueMax.png'
     meteorMax = 'images/unitMeteorMax.png'
     minotaurMax = 'images/unitMinotaurMax.png'
@@ -92,6 +93,7 @@ class UnitImage:
     teslaMax = 'images/unitTeslaMax.png'
     trapper = 'images/unitTrapper.png'
     trapper_ALT = 'images/unitTrapper_ALT_.png'
+    witch = 'images/unitWitch.png'
     witchMax = 'images/unitWitchMax.png'
     legendary = [
             # banshee,
@@ -108,8 +110,8 @@ class UnitImage:
             frostMax, genie, genieMax, harleyquin, harleyquin_ALT,
             # harleyquinMax, inquisitor,
             inquisitorMax,
-            # genie, genieMax, unithex, unithexMax, knightStatue,
-            knightStatueMax,
+            # genie, genieMax, unithex, unithexMax,
+            knightStatue, knightStatueMax,
             # meteor,
             meteorMax,
             # minotaur,
@@ -123,9 +125,7 @@ class UnitImage:
             # tesla,
             teslaMax, trapper, trapper_ALT,
             # sword,
-            swordMax,
-            # witch,
-            witchMax
+            swordMax, witch, witchMax
             ]
 
     all = common + rare + epic + legendary

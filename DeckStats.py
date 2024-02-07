@@ -1,67 +1,79 @@
 import time
 import datetime
 import easygui
+import threading
 
 import modules.windows as windows
 from modules.images import *
 from modules.counter import Counter
 from modules.gsheet import *
+from modules.styles import TopTrophy, MaxCrit
 
 APPNAME = 'Rush Royale'
-LOCATION = (1275, 2, 647, 1020)
-# LOCATION_L = (1275, 2, 647, 4200)
 
-# make RR screen to front and fix position
-def activateRR():
-    windows.moveApp(APPNAME, LOCATION)
-    time.sleep(0.2)
-    windows.activateApp(APPNAME)
-    time.sleep(0.2)
+def connectSheet() -> Worksheet:
+    print("connecting google sheet....")
+    ss = Spreadsheet()
+    sheetName = datetime.datetime.now().strftime("%Y%m") + "-test"
+    ws = ss.getSheet(sheetName) or ss.createSheet(sheetName)
+    print("connected sheet and created '" + sheetName + "'!")
+    return ws
 
-class Style:
-    menu = BtnImage.menuWithInfo
-    battleBtn = BtnImage.bottomBattle
-    lbBtn = BtnImage.leaderBoards
-    tab = BtnImage.maxCritTab
-    banner = LabelImage.maxCrit #totalTrophy
-    badge1st = LabelImage.maxCritBadge1st
-    cards = LabelImage.cards
-    wait = 1 # wait for 1 sec
-    pause = 0.2
-    location = LOCATION
-    lineHeight = 67
-    linesInPage = 7
-    lastLine = 10
-    heros = HeroImage.all
-    units = UnitImage.all
+def fmt(et: int, st: int) -> str:
+    return str(round(et - st, 3))
 
-s = Style()
+s = TopTrophy() # MaxCrit()
+s.lastLine = 84
+s.targets = [79]
+chk = []
 
-activateRR()
+start = time.time()
+chk.append(start)
+
+# prepare worksheet
+ws = None if s.dryRun else connectSheet()
+
+chk.append(time.time())
+print("Phase1(connecting to Googlesheet): " + fmt(chk[-1], chk[-2]) + " sec.")
+
+if not s.dryRun:
+    today = datetime.datetime.now().strftime("%Y%m%d")
+    ws.prepareSheet(today)
+    ws.update(ws.startColumn+"1", [[today, s.styleType]])
+
+chk.append(time.time())
+print("Phase2(prepare today's section): " + fmt(chk[-1], chk[-2]) + " sec.")
+
+# Set app
 c = Counter()
+
 c.setStyle(s)
+c.focusApp()
 c.openRanking()
 
-ds = c.count()
+chk.append(time.time())
+print("Phase3(open RushRoyale app): " + fmt(chk[-1], chk[-2]) + " sec.")
+
+ts = []
+for i, _d in enumerate(c.count()):
+    d = [i+1]
+    # print("In loop", i+1, s.targets) # for partial log
+    if s.targets and (i+1 not in s.targets): continue
+    error = len(_d[0]) != 1 or len(_d[1]) != 5
+    d += ["-"] if len(_d[0]) != 1 else _d[0]
+    d += _d[1] + ["-"] * (5 - len(_d[1]))
+    d += ["Error!! Some unit(s) missing"] if error else []
+    if not s.dryRun:
+        t = threading.Thread(target=ws.update, args=(ws.startColumn + str(i+2), [d],))
+        t.start()
+
+for t in ts: t.join() # wait all thread finished
 c.backToTop()
 
-path = datetime.datetime.now().strftime("%Y%m%d-%H%M%S.csv")
+chk.append(time.time())
+print("Phase4(catalogue decks): " + fmt(chk[-1], chk[-2]) + " sec.")
 
-# create google sheet
-name = datetime.datetime.now().strftime("%Y%m%d")
-ss = Spreadsheet()
-ws = ss.getSheet(name) or ss.createSheet(name)
-
-with open(path, mode='x') as f:
-    l = 1
-    for _d in ds:
-        d = []
-        for e in _d:
-            d += e if type(e).__name__ == 'list' else [e]
-        if len(_d[1]) != 1 or len(_d[2]) != 5: d += ["error"]
-        d = list(map(str, d))
-        ws.update("A" + str(l), [d])
-        l += 1
-        # f.write(",".join(d) + "\n")
-            
-# easygui.msgbox("データ取得完了!")
+lastMsg = "Completed!!"
+print("Total time: " + fmt(chk[-1], chk[0]) + " sec.")
+print(lastMsg)
+# easygui.msgbox(lastMsg)
