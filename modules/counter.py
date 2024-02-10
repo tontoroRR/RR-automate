@@ -44,10 +44,10 @@ class Counter:
     def open_ranking(self):
         res = self.op.find_any_thread(self.style.menus)
         if res:
-            self.op.exist_click(res.pop(), 0.2)
+            self.op.exist_click(res.pop(), 1)
         else:
             pass
-        self.op.exist_click(self.style.btn_leaderboards, 0.2)
+        self.op.exist_click(self.style.btn_leaderboards, 1)
         self.op.exist_click(self.style.tab, 0.2)
         self.op.exist_click(self.style.banner, 0.2)
         self.op.wait(self.style.badge1st, 0.2)
