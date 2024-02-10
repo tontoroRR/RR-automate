@@ -23,13 +23,13 @@ class Spreadsheet:
         gc = gspread.authorize(credentials)
         self.sheet = gc.open_by_key(sheetKey)
 
-    def createSheet(self, name: str):
+    def create_sheet(self, name: str):
         try:
             return Worksheet(self.sheet.add_worksheet(title=name, rows=306, cols=310))
         except gspread.exceptions.WorksheetNotFound:
             return False
 
-    def getSheet(self, name: str):
+    def get_sheet(self, name: str):
         try:
             return Worksheet(self.sheet.worksheet(name))
         except gspread.exceptions.WorksheetNotFound:
@@ -37,8 +37,8 @@ class Spreadsheet:
 
 class Worksheet:
     ws = None
-    startColumn = -1
-    endColumn = -1
+    start_column = -1
+    end_column = -1
     columns = 10
     region = ""
 
@@ -52,41 +52,41 @@ class Worksheet:
     def clear(self, range):
         self.ws.batch_clear(range)
     
-    def clearAll(self):
+    def clear_all(self):
         self.ws.clear()
 
-    def findCell(self, text: str):
+    def find_cell(self, text: str):
         return self.ws.find(text)
 
-    def prepareSheet(self, dt = None):
+    def prepare_sheet(self, dt = None):
         if not dt:
             dt = datetime.datetime.now().strftime("%Y%m%d")
-        cellSameDay = self.findCell(dt)
+        cellSameDay = self.find_cell(dt)
         if cellSameDay:
             col = cellSameDay.col
-            self.startColumn = Utils.convertIntToCol(col)
-            self.endColumn = Utils.convertIntToCol(col + self.columns)
+            self.start_column = Utils.convert_int_to_col(col)
+            self.end_column = Utils.convert_int_to_col(col + self.columns)
         else:
             day = 1
-            self.startColumn = Utils.convertIntToCol((day - 1) * self.columns + 1)
-            self.endColumn = Utils.convertIntToCol((day - 1) * self.columns + 1 + self.columns)
-        self.region = self.startColumn + "1:" + self.endColumn + str(self.ws.row_count)
+            self.start_column = Utils.convert_int_to_col((day - 1) * self.columns + 1)
+            self.end_column = Utils.convert_int_to_col((day - 1) * self.columns + 1 + self.columns)
+        self.region = self.start_column + "1:" + self.end_column + str(self.ws.row_count)
+
+    def clear_region(self):
         self.clear([self.region])
 
-    def isEmptyCell(self, cell):
+    def is_empty_cell(self, cell):
         if cell.value == "None":
             return True
         else:
             return False
 
-    def findLastHeaderCol(self):
+    # TODO: 一番最後のカラムを探す
+    def find_last_header_col(self):
         for i in range(1, self.ws.col_count, self.columns):
-            # pdb.set_trace()
             cell = self.ws.cell(1, i+1)
-            print(self.convertIntToCol(i))
-            if not self.isEmptyCell(cell):
+            print(self.convert_int_to_col(i))
+            if not self.is_empty_cell(cell):
                 print("not empty cell", cell)
                 return i + self.columns
         return 1
-
-

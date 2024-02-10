@@ -1,57 +1,61 @@
 from modules.images import *
 from modules.utils import Constatns as Const
 
+import pdb
+
 class Style:
-    appName = "Rush Royale"
+    app_name = "Rush Royale"
     location = Const.LOCATION
 
     menus = [BtnImage.menuWithInfo, BtnImage.menu]
-    battleBtn = BtnImage.bottomBattle
-    lbBtn = BtnImage.leaderBoards
+    btn_battle = BtnImage.bottomBattle
+    btn_leaderboards = BtnImage.leaderBoards
     cards = LabelImage.cards
     wait = 1
     pause = 0.2
     heros = HeroImage.all
     units = UnitImage.all
-    dryRun = False
+    dryrun = False
 
     # need to set at child class
-    styleType = None 
+    style_type = None 
 
     tab = None
     banner = None
     badge1st = None
 
-    lineHeight = None
-    linesInPage = None
-    lastLineYpos = None
-    lastLine = None
+    line_height = None
+    lines_per_page = None
+    last_line_y= None
+    line_count = 1
 
     # need to inject from outside
     targets = []
 
     # [LabelImage.maxCritBadge1st, LabelImage.totalTrophyBadge1st]
+    def import_from(self, yml:dict):
+        for k, v in yml.items(): setattr(self, k, v)
 
 class TopTrophy(Style):
-    styleType = "Top Trophy" 
+    style_type = "Top Trophy" 
 
     tab = BtnImage.totalTrophyTab
     banner = LabelImage.totalTrophy
     badge1st = LabelImage.totalTrophyBadge1st
 
-    lineHeight = 71
-    linesInPage = 6
-    lastLineYpos = 810
-    lastLine = 22
+    line_height= 71
+    lines_per_page = 6
+    last_line_y = 810
+    line_count = 1
 
 class MaxCrit(Style):
-    styleType = "Max Crit" 
+    style_type = "Max Crit" 
 
     tab = BtnImage.maxCritTab
     banner = LabelImage.maxCrit
     badge1st = LabelImage.maxCritBadge1st
 
-    lineHeight = 67
-    linesInPage = 7
-    lastLineYpos = 860
-    lastLine = 22
+    line_height= 67
+    lines_per_page = 7
+    last_line_y = 860
+    line_count = 1

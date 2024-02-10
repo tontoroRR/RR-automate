@@ -16,7 +16,6 @@ x: int = 45
 y: int = 62
 store_dir: str = os.environ.get('save_path')
 print(store_dir)
-# ''D:/Users/masaaki/Desktop/greenshot/'
 
 if len(sys.argv) == 3:
     x = int(sys.argv[1])
