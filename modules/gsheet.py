@@ -41,13 +41,15 @@ class Worksheet:
     end_column = -1
     columns = 10
     region = ""
+    default_format = {"backgroundColor": {"red":1.0, "green":1.0, "blue":1.0}}
 
 
     def __init__(self, ws):
         self.ws = ws
     
-    def update(self, range_name, values):
+    def update(self, range_name, values, format = default_format):
         self.ws.update(range_name=range_name, values=values)
+        self.ws.format(range_name, format)
     
     def clear(self, range):
         self.ws.batch_clear(range)

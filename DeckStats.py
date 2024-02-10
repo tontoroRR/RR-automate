@@ -9,16 +9,21 @@ from modules.counter import Counter
 from modules.gsheet import *
 from modules.styles import Style, TopTrophy, MaxCrit
 
+def get_format():
+    with open('setting.yml', 'r') as yml:
+        data = yaml.safe_load(yml)
+    return data['format']
+
 def set_style():
     with open('setting.yml', 'r') as yml:
         data = yaml.safe_load(yml)
     s = TopTrophy()
-    print(data)
     s.import_from(data['style'])
     return s
 
 def main():
     s = set_style()
+    f = get_format()
 
     # set timer
     chk = []
@@ -44,7 +49,7 @@ def main():
     lap(chk)
     print(f"Phase3(Open RushRoyale app): {fmt(chk[-1], chk[-2])} sec.")
 
-    log_decks_to_gsheet(c, ws)
+    log_decks_to_gsheet(c, ws, f)
     lap(chk)
     c.back_to_top()
     print(f"Phase4(Catalogue Decks): {fmt(chk[-1], chk[-2])} sec.")
@@ -70,18 +75,20 @@ def lap(chk: list):
 def fmt(et: float, st: float) -> str:
     return str(round(et - st, 3))
 
-def log_decks_to_gsheet(c: Counter, ws: Worksheet):
+def log_decks_to_gsheet(c: Counter, ws: Worksheet, f:dict):
     ts = []
     s = c.style
     for i, _d in enumerate(c.count()):
         d = [i+1]
         if s.targets and (i+1 not in s.targets): continue
+        format = f['normal']
         if len(_d[0]) != 1 or len(_d[1]) != 5:
             d[0] = f"!ERROR! - {d[0]}"
+            format = f['error']
         d += ["-"] if len(_d[0]) != 1 else _d[0]
         d += _d[1] + ["-"] * (5 - len(_d[1]))
         if not s.dryrun:
-            t = threading.Thread(target=ws.update, args=(ws.start_column + str(i+2), [d],))
+            t = threading.Thread(target=ws.update, args=(ws.start_column + str(i+2), [d], format,))
             t.start()
     for t in ts: t.join() # wait all thread finished
 

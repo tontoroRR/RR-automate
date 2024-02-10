@@ -1,4 +1,15 @@
 style:
-  line_count: 100
-  targets: [] #12, 47, 61, 71]
+  line_count: 10
+  targets: [1, 10] #12, 47, 61, 71]
 
+format:
+  normal:
+    backgroundColor:
+      red: 1.0
+      green: 1.0
+      blue: 1.0
+  error:
+    backgroundColor:
+      red: 1.0
+      green: 0.0
+      blue: 0.0
