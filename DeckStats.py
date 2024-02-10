@@ -2,78 +2,88 @@ import time
 import datetime
 import easygui
 import threading
+import yaml
 
-import modules.windows as windows
 from modules.images import *
 from modules.counter import Counter
 from modules.gsheet import *
-from modules.styles import TopTrophy, MaxCrit
+from modules.styles import Style, TopTrophy, MaxCrit
 
-APPNAME = 'Rush Royale'
+def set_style():
+    with open('setting.yml', 'r') as yml:
+        data = yaml.safe_load(yml)
+    s = TopTrophy()
+    print(data)
+    s.import_from(data['style'])
+    return s
 
-def connectSheet() -> Worksheet:
+def main():
+    s = set_style()
+
+    # set timer
+    chk = []
+    lap(chk)
+
+    # connect to Google sheet, then open/create sheet
+    ws = none if s.dryrun else connect_sheet(s.style_type)
+    lap(chk)
+    print(f"Phase1(connecting to Googlesheet): {fmt(chk[-1], chk[-2])} sec.")
+
+    if not s.dryrun:
+        _today = datetime.datetime.now().strftime("%Y%m%d")
+        ws.prepare_sheet(_today)
+        if not s.targets: ws.clear_region()
+        ws.update(ws.start_column+"1", [[_today, s.style_type]])
+        print(f"Phase2(prepare sheet as of {_today}): {fmt(chk[-1], chk[-2])} sec.")
+    lap(chk)
+
+    # open App
+    c = Counter(s)
+    c.focus_app()
+    c.open_ranking()
+    lap(chk)
+    print(f"Phase3(Open RushRoyale app): {fmt(chk[-1], chk[-2])} sec.")
+
+    log_decks_to_gsheet(c, ws)
+    lap(chk)
+    c.back_to_top()
+    print(f"Phase4(Catalogue Decks): {fmt(chk[-1], chk[-2])} sec.")
+
+    # Wrap up
+    last_msg = "Completed!!"
+    print(f"Total time: {fmt(chk[-1], chk[0])} sec.")
+    print(last_msg)
+    # easygui.msgbox(lastMsg)
+    pass
+
+def connect_sheet(_sheet_type: str) -> Worksheet:
     print("connecting google sheet....")
-    ss = Spreadsheet()
-    sheetName = datetime.datetime.now().strftime("%Y%m") + "-test"
-    ws = ss.getSheet(sheetName) or ss.createSheet(sheetName)
-    print("connected sheet and created '" + sheetName + "'!")
+    _ss = Spreadsheet()
+    _sheet_name = f"{datetime.datetime.now().strftime("%Y%m%d")}-{_sheet_type}"
+    ws = _ss.get_sheet(_sheet_name) or _ss.create_sheet(_sheet_name)
+    print("connected sheet and created '" + _sheet_name + "'!")
     return ws
 
-def fmt(et: int, st: int) -> str:
+def lap(chk: list):
+    chk.append(time.time())
+
+def fmt(et: float, st: float) -> str:
     return str(round(et - st, 3))
 
-s = TopTrophy() # MaxCrit()
-s.lastLine = 84
-s.targets = [79]
-chk = []
+def log_decks_to_gsheet(c: Counter, ws: Worksheet):
+    ts = []
+    s = c.style
+    for i, _d in enumerate(c.count()):
+        d = [i+1]
+        if s.targets and (i+1 not in s.targets): continue
+        if len(_d[0]) != 1 or len(_d[1]) != 5:
+            d[0] = f"!ERROR! - {d[0]}"
+        d += ["-"] if len(_d[0]) != 1 else _d[0]
+        d += _d[1] + ["-"] * (5 - len(_d[1]))
+        if not s.dryrun:
+            t = threading.Thread(target=ws.update, args=(ws.start_column + str(i+2), [d],))
+            t.start()
+    for t in ts: t.join() # wait all thread finished
 
-start = time.time()
-chk.append(start)
-
-# prepare worksheet
-ws = None if s.dryRun else connectSheet()
-
-chk.append(time.time())
-print("Phase1(connecting to Googlesheet): " + fmt(chk[-1], chk[-2]) + " sec.")
-
-if not s.dryRun:
-    today = datetime.datetime.now().strftime("%Y%m%d")
-    ws.prepareSheet(today)
-    ws.update(ws.startColumn+"1", [[today, s.styleType]])
-
-chk.append(time.time())
-print("Phase2(prepare today's section): " + fmt(chk[-1], chk[-2]) + " sec.")
-
-# Set app
-c = Counter()
-
-c.setStyle(s)
-c.focusApp()
-c.openRanking()
-
-chk.append(time.time())
-print("Phase3(open RushRoyale app): " + fmt(chk[-1], chk[-2]) + " sec.")
-
-ts = []
-for i, _d in enumerate(c.count()):
-    d = [i+1]
-    # print("In loop", i+1, s.targets) # for partial log
-    if s.targets and (i+1 not in s.targets): continue
-    error = len(_d[0]) != 1 or len(_d[1]) != 5
-    d += ["-"] if len(_d[0]) != 1 else _d[0]
-    d += _d[1] + ["-"] * (5 - len(_d[1]))
-    d += ["Error!! Some unit(s) missing"] if error else []
-    if not s.dryRun:
-        t = threading.Thread(target=ws.update, args=(ws.startColumn + str(i+2), [d],))
-        t.start()
-
-for t in ts: t.join() # wait all thread finished
-c.backToTop()
-
-chk.append(time.time())
-print("Phase4(catalogue decks): " + fmt(chk[-1], chk[-2]) + " sec.")
-
-lastMsg = "Completed!!"
-print("Total time: " + fmt(chk[-1], chk[0]) + " sec.")
-print(lastMsg)
-# easygui.msgbox(lastMsg)
+if __name__ == "__main__":
+    main()

@@ -3,7 +3,7 @@ import re
 class Utils:
 
     @staticmethod
-    def convertIntToCol(n: int) -> str:
+    def convert_int_to_col(n: int) -> str:
         ai = ord('A')
         (f, s) = divmod(n-1, 26)
         fc = chr(ai + f - 1) if f > 0 else ''
@@ -12,7 +12,7 @@ class Utils:
     #('' if di == 0 else chr(alphaCode + di)) + chr(alphaCode + mo + 1)
 
     @staticmethod
-    def convertColToInt(c: str) -> int:
+    def convert_col_to_int(c: str) -> int:
         lcols = list(re.sub(r"[0-9]", "", c))
         col = 0
         for l in lcols:

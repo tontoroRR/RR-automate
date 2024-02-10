@@ -6,112 +6,92 @@ import asyncio
 import threading
 from collections import deque
 
-from modules.images import Converter as Cv
+from modules.styles import Style
+from modules.images import UnitConverter as uc
 
 import pdb
 
 pyautogui.PAUSE = 0.2
 
-class Deck:
-    type = "PvP"
-    hero = None
-    units = []
-
 class Counter:
     style = None
     op = None
-    cardY = 565
+    card_y = 565
 
-    @staticmethod
-    def convert(ary: list):
-        l = list(map(Cv.convert, ary))
+    def convert(self, ary: list):
+        l = list(map(uc.convert_img_to_name, ary))
         return list(set(l))
 
-    def __init__(self):
+    def __init__(self, s: Style = None):
         self.op = Operation()
-        pass
+        if s:
+            self.set_style(s)
+            self.op.line_height = s.line_height
 
-    def focusApp(self):
-        self.__moveApp()
+    def focus_app(self):
+        (left, top, width, height) = self.style.location
+        h = ctypes.windll.user32.FindWindowW(0, self.style.app_name)
+        ctypes.windll.user32.MoveWindow(h, left, top, width, height)
         time.sleep(0.2)
-        self.__activateApp()
+        ctypes.windll.user32.SetForegroundWindow(h)
         time.sleep(0.2)
 
-    def setStyle(self, _style):
+    def set_style(self, _style):
         self.style = _style
-        self.op.setLocation(self.style.location)
-        self.op.setWait(self.style.wait)
+        self.op.set_location(self.style.location)
+        self.op.set_wait(self.style.wait)
 
-    def openRanking(self):
-        res = self.op.findAnyThread(self.style.menus)
+    def open_ranking(self):
+        res = self.op.find_any_thread(self.style.menus)
         if res:
-            self.op.existClick(res.pop())
+            self.op.exist_click(res.pop(), 0.2)
         else:
             pass
-        self.op.existClick(self.style.lbBtn)
-        self.op.existClick(self.style.tab)
-        self.op.existClick(self.style.banner)
-        self.op.wait(self.style.badge1st)
+        self.op.exist_click(self.style.btn_leaderboards, 0.2)
+        self.op.exist_click(self.style.tab, 0.2)
+        self.op.exist_click(self.style.banner, 0.2)
+        self.op.wait(self.style.badge1st, 0.2)
 
-        # set start/end line position
-        posX = pyautogui.position()[0]
-        posY = self.op.getCenter(self.style.badge1st)[1]
-        self.op.firstLinePos = (posX, posY)
-        self.op.lastLinePos = (posX, posY + self.style.lineHeight * self.style.linesInPage)
-        self.op.moveToFirstLine()
+        x = pyautogui.position()[0]
+        y = self.op.get_center(self.style.badge1st)[1]
+        self.op.first_line_pos= (x, y)
+        self.op.moveTo_first_line()
 
-    def _filterFoundOnly(self, _dict):
-        l = list(map(Cv.convert, filter(lambda k: _dict[k] == 1, _dict.keys())))
-        return list(set(l))
-
-    def getUserDeck(self):
+    def get_user_deck(self):
         hero = []
         units = []
-        hero = self.convert(self.op.findAnyThread(self.style.heros))
-        units = self.convert(self.op.findAnyThread(self.style.units))
+        hero = self.convert(self.op.find_any_thread(self.style.heros))
+        units = self.convert(self.op.find_any_thread(self.style.units))
         return (hero, sorted(units))
 
     def count(self):
-        for n in range(1, self.style.lastLine + 1):
-            posY = pyautogui.position()[1]
+        for n in range(1, self.style.line_count + 1):
+            pos_y = pyautogui.position()[1]
 
-            if (self.style.lastLineYpos < posY and n != self.style.lastLine):
-                # linesScrollUp = self.style.linesInPage 
-                if (self.style.lastLine - n) > self.style.linesInPage:
-                    linesScrollUp = self.style.linesInPage 
+            if (self.style.last_line_y < pos_y and n != self.style.line_count):
+                if (self.style.line_count - n) > self.style.lines_per_page:
+                    self.op.scrollup_slow(self.style.line_height, self.style.lines_per_page)
+                    self.op.moveTo_first_line()
                 else:
-                    linesScrollUp = self.style.lastLine - n
-                # print("y = ", posY, ";  sup = ", linesScrollUp, ";  n = ", n)
-                self.op.scrollUpSlow(self.style.lineHeight, linesScrollUp)
-
-            # print(n, self.style.targets) # for partial log
+                    self.op.scrollup_slow(self.style.line_height, self.style.line_count - n)
+                    self.op.moveTo_line_n(self.style.line_count - n + 1)
             if not (self.style.targets) or (self.style.targets and (n in self.style.targets)):
                 pyautogui.click()
-                self.op.dragImageTo(-1, self.cardY, self.style.cards)
-                if self.style.dryRun:
+                self.op.drag_image_to(-1, self.card_y, self.style.cards)
+                if self.style.dryrun:
                     yield((['hero'], ['unit1', 'unit2', 'unit3', 'unit4', 'unit5']))
                 else:
-                    yield(self.getUserDeck())
+                    yield(self.get_user_deck())
                 pyautogui.press('esc')
             else:
                 yield([])
 
-            if (n != self.style.lastLine):
-                pyautogui.move(0, self.style.lineHeight)
+            if (n != self.style.line_count):
+                pyautogui.move(0, self.style.line_height)
 
-    def backToTop(self):
-        while not(self.op.exists(self.style.battleBtn)):
+    def back_to_top(self):
+        while not(self.op.exists(self.style.btn_battle)):
             pyautogui.press('esc')
-
-    def __moveApp(self):
-        (left, top, width, height) = self.style.location
-        h = ctypes.windll.user32.FindWindowW(0, self.style.appName)
-        ctypes.windll.user32.MoveWindow(h, left, top, width, height)
-
-    def __activateApp(self):
-        h = ctypes.windll.user32.FindWindowW(0, self.style.appName)
-        ctypes.windll.user32.SetForegroundWindow(h)
-
 
 class Operation:
     WAIT = 0.1
@@ -120,35 +100,36 @@ class Operation:
     DEBUG = False
     TOOLOW = 650
     LOCATION = None
-    firstLinePos= (-1, -1)
-    lastLinePos= (-1, -1)
+    first_line_pos= (-1, -1)
+    line_height = 0
 
     def __init__(self):
         pass
 
-    def moveToFirstLine(self):
-        pyautogui.moveTo(self.firstLinePos)
-        # pyautogui.move(0, 215)
-    
-    def moveToLastLine(self):
-        pyautogui.moveTo(self.lastLinePos)
-        # pyautogui.move(0, 684)
+    def moveTo_line_n(self, n: int):
+        diff = self.line_height * (n - 1)
+        (x, y) = self.first_line_pos
+        y += diff
+        pyautogui.moveTo(x, y)
 
-    def setLocation(self, _loc):
+    def moveTo_first_line(self):
+        self.moveTo_line_n(1)
+    
+    def set_location(self, _loc):
         self.LOCATION = _loc
 
-    def setWait(self, _wait):
+    def set_wait(self, _wait):
         self.WAIT = _wait
 
-    def __los(self, img):
-        return pyautogui.locateOnScreen(img, region = self.LOCATION, confidence = self.CONFIDENCE)
+    def __los(self, _img, _region = LOCATION):
+        return pyautogui.locateOnScreen(_img, region = _region, confidence = self.CONFIDENCE)
 
     def __dp(self, *values: object):
         if self.DEBUG:
             print(values)
 
-    def wait(self, img, _wait = None): # default wait for 10 sec
-        wait = self.LONG_WAIT if (_wait is None) else _wait
+    def wait(self, img, _wait = LONG_WAIT): # default wait for 10 sec
+        # wait = self.LONG_WAIT if (_wait is None) else _wait
         xy = None
         start = time.time()
         while (xy == None):
@@ -156,20 +137,19 @@ class Operation:
                 xy = self.__los(img)
             except pyautogui.ImageNotFoundException:
                 pass
-            if ((time.time() - start) > wait):
-                self.__dp("not fount ", img, " after ", wait, "(s)")
+            if ((time.time() - start) > _wait):
+                self.__dp("not fount ", img, " after ", _wait, "(s)")
                 raise pyautogui.ImageNotFoundException
 
-    def __exists(self, img, wait = None):
-        if (wait is None): wait = self.WAIT
-        self.__dp(wait)
-        for i in range(int(wait*10)):
+    def __exists(self, _img, _wait = WAIT, _region = LOCATION):
+        self.__dp(_wait)
+        for i in range(int(_wait*10)):
             try:
-                xy = self.__los(img)
-                self.__dp(img, " found")
+                xy = self.__los(_img, _region)
+                self.__dp(_img, " found")
                 return True
             except pyautogui.ImageNotFoundException:
-                self.__dp(img, " not found ", i)
+                self.__dp(_img, " not found ", i)
                 pass
         return False
 
@@ -184,63 +164,65 @@ class Operation:
     def exists(self, img):
         return self.__exists(img)
 
-    def existClick(self, img):
-        if self.__exists(img): self.__click(img)
+    def exist_click(self, _img, _wait = WAIT):
+        if self.__exists(_img, _wait): self.__click(_img)
 
-    def dragImageTo(self, x, y, img):
-        startPos = pyautogui.position()
-        self.wait(img)
-        xy = pyautogui.center(self.__los(img))
+    def drag_image_to(self, _x:int = -1, _y:int = -1, _img:str = ""):
+        start_pos = pyautogui.position()
+        self.wait(_img)
+        xy = pyautogui.center(self.__los(_img))
         if xy[1] <= self.TOOLOW:
-            return
+            pass
         else:
             pyautogui.mouseDown(xy)
-            if (x == -1): x = xy[0]
-            if (y == -1): y = xy[1]
+            x = xy[0] if (_x == -1) else _x
+            y = xy[1] if (_y == -1) else _y
             pyautogui.moveTo(x, y, 0.3)
             time.sleep(0.3)
             pyautogui.mouseUp()
-            pyautogui.moveTo(startPos)
+            pyautogui.moveTo(start_pos)
 
-
-    def scrollUpSlow(self, lineHeight: int, lines: int):
-        dy = lineHeight * lines
+    def scrollup_slow(self, line_height: int, lines: int):
+        dy = line_height * lines
         diff = lines * lines
         pyautogui.mouseDown()
         pyautogui.move(0, -1 * dy - diff, 0.6)
-        time.sleep(0.3)
+        time.sleep(0.25)
         pyautogui.mouseUp()
         pyautogui.move(0, diff)
 
-    def findAnyThread(self, imgs):
-        q = deque()
-        for i in imgs: q.append({i: 0})
-        def tfunc(_d:dict):
-            k = list(_d.keys())[0]
-            if self.__exists(k, 0.1): _d[k] = 1
+    def find_any_thread(self, imgs: list):
+        def find_worker(_i:str, _d:list):
+            if self.__exists(_i, 0.1): _d[_i] = 1
+
         ts = []
-        for d in q: 
-            t = threading.Thread(target=tfunc, args=(d,))
+        q = deque()
+        for _i in imgs: q.append({_i: 0})
+
+        for _d in q: 
+            _i = list(_d.keys())[0]
+            t = threading.Thread(target=find_worker, args=(_i, _d,), daemon=True)
             ts.append(t)
             t.start()
         for t in ts: t.join()
+
         res = []
-        for d in q:
-            for k, v in d.items():
+        for _d in q:
+            for k, v in _d.items():
                 if v > 0: res.append(k)
+
         return res
 
-    def getTopLeft(self, img):
+    def get_top_left(self, img):
         return None
         xywh = self.__los(img)
-        x = xywh[0]
-        y = xywh[1]
+        (x, y) = (xywh[0], xywh[1])
         return (x, y)
 
-    def getBottomRight(self, img):
+    def get_bottom_right(self, img):
         return None
 
-    def getCenter(self, img):
+    def get_center(self, img):
         xy = pyautogui.center(self.__los(img))
         return xy
 

@@ -14,3 +14,8 @@ Count up Top100
 1. Install python modules. ``` > pip install -r requirement ```
 1. Run command. ```> python3.exe DeckStatus.py```
 
+## TODO
+
+[] トロフィー上位ではちょっとづつスクロールがずれていくので70位以降はぎりぎりのところをクリックしている
+[] ヒーローとアタッカーの組み合わせ、アタッカーだけでどれほど使われているのかを集計
+[] 蘭だーむリーグの集計
