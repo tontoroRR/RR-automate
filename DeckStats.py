@@ -8,7 +8,6 @@ from importlib import import_module
 from modules.images import *
 from modules.counter import Counter
 from modules.gsheet import *
-# from modules.styles import TopTrophy, MaxCrit, RhandumLeague
 from modules.rushroyale_stats import RushRoyaleStats
 
 def get_format():
@@ -22,7 +21,7 @@ def set_style():
 
     _m = import_module('modules.styles')
     _c = getattr(_m, data['style']['target_module'])
-    s = _c() #RhandumLeague() #  TopTrophy()
+    s = _c()
     s.import_from(data['style'])
 
     return s
@@ -38,7 +37,6 @@ def main():
     f = get_format()
 
     rr = RushRoyaleStats(s, f)
-    # rr.connect_googlesheet()
 
     # set timer
     chk = []
