@@ -1,0 +1,33 @@
+unit:
+  - common:
+    - name: Archer
+      unit_type: Damage
+      jp_name: 射手
+    - name: Bombardier
+      unit_type: Debuff
+      jp_name: 爆撃手
+    - name: Cold Mage
+      unit_type: Debuff
+      jp_name: 極寒の魔法使い
+    - name: Fire Mage
+      unit_type: Damage
+      jp_name: 炎の魔法使い
+    - name: Hunter
+      unit_type: Damage
+      jp_name: ハンター
+    - name: Lightning Mage
+      unit_type: Damage
+      jp_name: 稲光の魔法使い
+    - name: Poisoner
+      unit_type: Debuff
+      jp_name: 毒殺者
+    - name: Rogue
+      unit_type: Damage
+      jp_name: ならず者
+    - name: Thrower
+      unit_type: Damage
+      jp_name: スロワー
+  - rare:
+    - name: Alchemist
+      unit_type: Damage
+      jp_name: アルケミスト

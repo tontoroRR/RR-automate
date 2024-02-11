@@ -11,6 +11,7 @@ class BtnImage:
 class LabelImage:
     totalTrophy = 'images/totaltrophies.png'
     totalTrophyBadge1st = 'images/totalTrophyBadge1st.png'
+    totalTrophyBadge1st_ALT = 'images/totalTrophyBadge1st_ALT_.png'
     maxCrit = 'images/maxCrit.png'
     maxCritBadge1st = 'images/maxCrit1stBadge.png'
     cards = 'images/cardsLabel.png'
@@ -51,9 +52,10 @@ class HeroImage:
 class UnitImage:
     # Common
     bombardier = 'images/unitBombardier.png'
+    coldMageMax = 'images/unitCorsair.png'
     hunterMax = 'images/unitHunterMax.png'
     rogueMax = 'images/unitRogueMax.png'
-    common = [ bombardier, hunterMax, rogueMax ]
+    common = [ bombardier, coldMageMax, hunterMax, rogueMax ]
 
     # Rare
     alchemistMax = 'images/unitAlchemistMax.png'
@@ -104,8 +106,10 @@ class UnitImage:
     dryadMax = 'images/unitDryadMax.png'
     dryadMax_ALT = 'images/unitDryadMax_ALT_.png'
     frostMax = 'images/unitFrostMax.png'
-    genieMax = 'images/unitGenieMax.png'
     genie = 'images/unitGenieMax.png'
+    genie_ALT = 'images/unitGenie_ALT_.png'
+    genie_ALT2 = 'images/unitGenie_ALT__ALT_.png'
+    genieMax = 'images/unitGenieMax.png'
     harleyquin = 'images/unitHQ.png'
     harleyquin_ALT = 'images/unitHQ_ALT_.png'
     inquisitor = 'images/unitInquisitor.png'
@@ -125,6 +129,7 @@ class UnitImage:
     seadog = 'images/unitSeadog.png'
     seadogMax = 'images/unitSeadogMax.png'
     shaman = 'images/unitShaman.png'
+    spiritMaster = 'images/unitSpiritMasterMax.png'
     spiritMasterMax = 'images/unitSpiritMasterMax.png'
     spiritMasterMax_ALT = 'images/unitSpiritMasterMax_ALT_.png'
     stasis = 'images/unitStasis.png'
@@ -146,7 +151,7 @@ class UnitImage:
             # demonologistMax,
             dryad, dryadMax, dryadMax_ALT,
             # frost,
-            frostMax, genie, genieMax, harleyquin, harleyquin_ALT,
+            frostMax, genie, genie_ALT, genie_ALT2, genieMax, harleyquin, harleyquin_ALT,
             # harleyquinMax,
             inquisitor, inquisitorMax,
             # hex, hexMax,
@@ -156,8 +161,7 @@ class UnitImage:
             # minotaur,
             minotaurMax, monk, monkMax, ridingHood, ridingHood_ALT, ridingHoodMax,
             robot, robotMax, scrapper, stasis, seadog, seadogMax, shaman,
-            # spiritMaster,
-            spiritMasterMax, spiritMasterMax_ALT, summoner, summonerMax,
+            spiritMaster, spiritMasterMax, spiritMasterMax_ALT, summoner, summonerMax,
             # tesla,
             sword, sword_ALT, swordMax, teslaMax, trapper, trapper_ALT, witch, witchMax
             ]

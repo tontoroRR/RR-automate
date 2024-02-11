@@ -18,6 +18,3 @@ class Utils:
         for l in lcols:
             col = col * 26 + ord(l) - 64
         return col
-
-class Constatns:
-    LOCATION = (1275, 2, 647, 1020)
