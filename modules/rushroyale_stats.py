@@ -1,5 +1,13 @@
 # stats information of Rush Royale, say Units, Heros, User Info, Event
 from enum import Enum
+from modules.styles import Style
+
+class RushRoyaleStats():
+    def __init__(self, style: Style, format: dict):
+        self.style = style
+        self.format = format
+        pass
+
 
 class UnitType(Enum):
     NONE = 0

@@ -42,16 +42,13 @@ class Counter:
         self.op.set_wait(self.style.wait)
 
     def open_ranking(self):
-        res = self.op.find_any_thread(self.style.menus)
-        if res:
-            self.op.exist_click(res.pop(), 1)
-        else:
-            pass
-        self.op.exist_click(self.style.btn_leaderboards, 1)
-        self.op.exist_click(self.style.tab, 0.2)
-        self.op.exist_click(self.style.banner, 0.2)
-        self.op.wait(self.style.badge1st, 0.2)
-
+        for btn in self.style.buttonSeq:
+            if isinstance(btn, list):
+                res = self.op.find_any_thread(btn)
+                if res: self.op.exist_click(res.pop(), 1)
+            else:
+                self.op.exist_click(btn, 1)
+        self.op.wait(self.style.badge1st, 1)
         x = pyautogui.position()[0]
         y = self.op.get_center(self.style.badge1st)[1]
         self.op.first_line_pos= (x, y)
@@ -64,20 +61,25 @@ class Counter:
         units = self.convert(self.op.find_any_thread(self.style.units))
         return (hero, sorted(units))
 
+    def open_and_get_deck(self):
+
     def count(self):
         for n in range(1, self.style.line_count + 1):
             pos_y = pyautogui.position()[1]
-
             if (self.style.last_line_y < pos_y and n != self.style.line_count):
                 if (self.style.line_count - n) > self.style.lines_per_page:
                     self.op.scrollup_slow(self.style.line_height, self.style.lines_per_page)
                     self.op.moveTo_first_line()
                 else:
                     self.op.scrollup_slow(self.style.line_height, self.style.line_count - n)
-                    self.op.moveTo_line_n(self.style.line_count - n + 1)
-            if not (self.style.targets) or (self.style.targets and (n in self.style.targets)):
+                    self.op.moveTo_line_n(self.style.lines_per_page - (self.style.line_count - n + 1))
+            elif not (self.style.targets) or (self.style.targets and (n in self.style.targets)):
                 pyautogui.click()
                 self.op.drag_image_to(-1, self.card_y, self.style.cards)
+                if self.style.card_tab:
+                    _pos = pyautogui.position()
+                    self.op.exist_click(self.style.card_tab, 1)
+                    pyautogui.moveTo(_pos)
                 if self.style.dryrun:
                     yield((['hero'], ['unit1', 'unit2', 'unit3', 'unit4', 'unit5']))
                 else:

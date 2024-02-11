@@ -1,6 +1,6 @@
 style:
   line_count: 10
-  targets: [1, 10] #12, 47, 61, 71]
+  targets: []
 
 format:
   normal:
