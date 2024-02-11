@@ -1,6 +1,8 @@
 style:
-  line_count: 10
-  targets: []
+  target_module: RhandumLeague #TopTrophy # One of TopTrophy, MaxCrit, RhandumLeague 
+  total_line: 100
+  lines_only: []
+  adjust_scroll_up: 1.08
 
 format:
   normal:
