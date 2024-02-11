@@ -18,13 +18,11 @@ def get_format():
 def set_style():
     with open('setting.yml', 'r') as yml:
         data = yaml.safe_load(yml)
-
     _m = import_module('modules.styles')
-    _c = getattr(_m, data['style']['target_module'])
-    s = _c()
-    s.import_from(data['style'])
+    _s = getattr(_m, data['style']['target_module'])()
+    _s.import_from(data['style'])
 
-    return s
+    return _s
 
 def main():
     # 1. catalogue decks of
@@ -90,19 +88,21 @@ def fmt(et: float, st: float) -> str:
 
 def log_decks_to_gsheet(c: Counter, ws: Worksheet, f:dict):
     ts = []
-    s = c.style
-    for i, _d in enumerate(c.count()):
-        d = [i+1]
-        if s.lines_only and (i+1 not in s.lines_only): continue
+    _s = c.style
+    ws.update(f"{ws.start_column}2", _s.title_deck_table)
+    for _i, _d in enumerate(c.count()):
+        d = [_i+1]
+        if _s.lines_only and (_i+1 not in _s.lines_only): continue
         format = f['normal']
-        if len(_d[0]) != 1 or len(_d[1]) != 5:
+        if len(_d[0]) != 1 or len(_d[1]) != 5: 
             d[0] = f"!ERROR! - {d[0]}"
             format = f['error']
         d += ["-"] if len(_d[0]) != 1 else _d[0]
         d += _d[1] + ["-"] * (5 - len(_d[1]))
-        if not s.dryrun:
-            t = threading.Thread(target=ws.update, args=(ws.start_column + str(i+2), [d], format,))
-            t.start()
+        if not _s.dryrun:
+            _t = threading.Thread(target=ws.update, args=(ws.start_column + str(_i+3), [d], format,))
+            _t.start()
+            ts.append(_t)
     for t in ts: t.join() # wait all thread finished
 
 if __name__ == "__main__":
