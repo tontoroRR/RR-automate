@@ -27,6 +27,7 @@ class Counter:
         if s:
             self.set_style(s)
             self.op.line_height = s.line_height
+            self.op.adjust_scroll_up = s.adjust_scroll_up
 
     def focus_app(self):
         (left, top, width, height) = self.style.location
@@ -53,6 +54,8 @@ class Counter:
         y = self.op.get_center(self.style.badge1st)[1]
         self.op.first_line_pos= (x, y)
         self.op.moveTo_first_line()
+        if self.style.special_operation():
+            print(self.style.special_operation())
 
     def get_user_deck(self):
         hero = []
@@ -61,35 +64,53 @@ class Counter:
         units = self.convert(self.op.find_any_thread(self.style.units))
         return (hero, sorted(units))
 
+    def click_top100_for_RL(self):
+        pass
+
     def open_and_get_deck(self):
+        pass
 
     def count(self):
-        for n in range(1, self.style.line_count + 1):
+        cur_line = 1
+        plus_lines = 0
+        for _n in range(1, self.style.total_line + 1):
             pos_y = pyautogui.position()[1]
-            if (self.style.last_line_y < pos_y and n != self.style.line_count):
-                if (self.style.line_count - n) > self.style.lines_per_page:
-                    self.op.scrollup_slow(self.style.line_height, self.style.lines_per_page)
-                    self.op.moveTo_first_line()
-                else:
-                    self.op.scrollup_slow(self.style.line_height, self.style.line_count - n)
-                    self.op.moveTo_line_n(self.style.lines_per_page - (self.style.line_count - n + 1))
-            elif not (self.style.targets) or (self.style.targets and (n in self.style.targets)):
+            cur_line = _n % self.style.lines_per_page
+            if cur_line == 0:
+                cur_line = self.style.lines_per_page
+            old_cur_line = cur_line
+            cur_line = cur_line + plus_lines
+            print(_n, pos_y, old_cur_line, cur_line, plus_lines)
+            # first get deck
+            if 0 < len(self.style.lines_only) and (_n not in self.style.lines_only):
+                yield([])
+            elif self.style.dryrun:
+                yield((['hero'], ['unit1', 'unit2', 'unit3', 'unit4', 'unit5']))
+            else:
                 pyautogui.click()
-                self.op.drag_image_to(-1, self.card_y, self.style.cards)
                 if self.style.card_tab:
                     _pos = pyautogui.position()
                     self.op.exist_click(self.style.card_tab, 1)
                     pyautogui.moveTo(_pos)
-                if self.style.dryrun:
-                    yield((['hero'], ['unit1', 'unit2', 'unit3', 'unit4', 'unit5']))
-                else:
-                    yield(self.get_user_deck())
+                self.op.drag_image_to(-1, self.card_y, self.style.cards)
+                yield(self.get_user_deck())
                 pyautogui.press('esc')
-            else:
-                yield([])
-
-            if (n != self.style.line_count):
+            # next, move or scroll up
+            if cur_line < self.style.lines_per_page:
                 pyautogui.move(0, self.style.line_height)
+            elif _n == self.style.total_line:
+                pass
+            else:
+                lines_remained = self.style.total_line - _n
+                print(_n, pos_y, cur_line, lines_remained)
+                if self.style.lines_per_page <= lines_remained:
+                    self.op.scrollup_slow(self.style.lines_per_page)
+                    self.op.moveTo_first_line()
+                else:
+                    self.op.scrollup_slow(lines_remained)
+                    self.op.moveTo_line_n(self.style.lines_per_page - lines_remained + 1)
+                    plus_lines = self.style.lines_per_page - lines_remained
+            if (_n == self.style.total_line): time.sleep(5)
 
     def back_to_top(self):
         while not(self.op.exists(self.style.btn_battle)):
@@ -104,6 +125,7 @@ class Operation:
     LOCATION = None
     first_line_pos= (-1, -1)
     line_height = 0
+    adjust_scroll_up = 0
 
     def __init__(self):
         pass
@@ -184,14 +206,13 @@ class Operation:
             pyautogui.mouseUp()
             pyautogui.moveTo(start_pos)
 
-    def scrollup_slow(self, line_height: int, lines: int):
-        dy = line_height * lines
-        diff = lines * lines
+    def scrollup_slow(self, lines: int):
+        dy = -1 * int(self.line_height * lines * self.adjust_scroll_up)
         pyautogui.mouseDown()
-        pyautogui.move(0, -1 * dy - diff, 0.6)
+        time.sleep(0.2)
+        pyautogui.move(0, dy, 0.6) #, pyautogui.easeInQuad)
         time.sleep(0.25)
         pyautogui.mouseUp()
-        pyautogui.move(0, diff)
 
     def find_any_thread(self, imgs: list):
         def find_worker(_i:str, _d:list):

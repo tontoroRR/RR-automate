@@ -30,17 +30,21 @@ class Style:
     line_height = None
     lines_per_page = None
     last_line_y= None
-    line_count = 0
+    adjust_scroll_up = 0
+    total_line = 0
     card_y = 565
 
     card_tab = None # No need to click
 
     # need to inject from outside
-    targets = []
+    lines_only = []
 
     # [LabelImage.maxCritBadge1st, LabelImage.totalTrophyBadge1st]
     def import_from(self, yml:dict):
         for k, v in yml.items(): setattr(self, k, v)
+
+    def special_operation(self):
+        return None
 
 
 class TopTrophy(Style):
@@ -51,9 +55,9 @@ class TopTrophy(Style):
     badge1st = LabelImage.totalTrophyBadge1st
 
     line_height= 71
-    lines_per_page = 6
+    lines_per_page = 7
     last_line_y = 810
-    line_count = 1
+    total_line = 1
 
     def __init__(self):
         self.buttonSeq.append(self.tab)
@@ -67,9 +71,9 @@ class MaxCrit(Style):
     badge1st = LabelImage.maxCritBadge1st
 
     line_height= 67
-    lines_per_page = 7
+    lines_per_page = 8
     last_line_y = 860
-    line_count = 1
+    total_line = 1
 
     def __init__(self):
         self.buttonSeq.append(self.tab)
@@ -82,8 +86,7 @@ class RhandumLeague(Style):
     line_height= 86
     lines_per_page = 5
     last_line_y = 480
-    line_count = 1
-    dryrun = True
+    total_line = 1
 
     card_tab = 'images/rhandumLeagueTab.png'
     def __init__(self):
@@ -92,3 +95,5 @@ class RhandumLeague(Style):
                 "images/rhandumLeagueCard.png",
                 'images/rhandumLeagueLabel.png'
                 ]
+    def special_operation(self):
+        return "click_top100_for_RL"

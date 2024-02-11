@@ -3,11 +3,12 @@ import datetime
 import easygui
 import threading
 import yaml
+from importlib import import_module
 
 from modules.images import *
 from modules.counter import Counter
 from modules.gsheet import *
-from modules.styles import TopTrophy, MaxCrit, RhandumLeague
+# from modules.styles import TopTrophy, MaxCrit, RhandumLeague
 from modules.rushroyale_stats import RushRoyaleStats
 
 def get_format():
@@ -18,8 +19,12 @@ def get_format():
 def set_style():
     with open('setting.yml', 'r') as yml:
         data = yaml.safe_load(yml)
-    s = RhandumLeague() #  TopTrophy()
+
+    _m = import_module('modules.styles')
+    _c = getattr(_m, data['style']['target_module'])
+    s = _c() #RhandumLeague() #  TopTrophy()
     s.import_from(data['style'])
+
     return s
 
 def main():
@@ -29,7 +34,6 @@ def main():
     #   c. Tournament
     # 2. Summary
     # 3. Do all if no parameters given
-    #
     s = set_style()
     f = get_format()
 
@@ -48,7 +52,7 @@ def main():
     if not s.dryrun:
         _today = datetime.datetime.now().strftime("%Y%m%d")
         ws.prepare_sheet(_today)
-        if not s.targets: ws.clear_region()
+        if not s.lines_only: ws.clear_region()
         ws.update(ws.start_column+"1", [[_today, s.style_type]])
         print(f"Phase2(prepare sheet as of {_today}): {fmt(chk[-1], chk[-2])} sec.")
     lap(chk)
@@ -91,7 +95,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, f:dict):
     s = c.style
     for i, _d in enumerate(c.count()):
         d = [i+1]
-        if s.targets and (i+1 not in s.targets): continue
+        if s.lines_only and (i+1 not in s.lines_only): continue
         format = f['normal']
         if len(_d[0]) != 1 or len(_d[1]) != 5:
             d[0] = f"!ERROR! - {d[0]}"

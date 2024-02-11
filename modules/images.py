@@ -117,6 +117,7 @@ class UnitImage:
     monk = 'images/unitMonk.png'
     monkMax = 'images/unitMonkMax.png'
     ridingHood = 'images/unitRidingHood.png'
+    ridingHood_ALT = 'images/unitRidingHood_ALT_.png'
     ridingHoodMax = 'images/unitRidingHoodMax.png'
     robot = 'images/unitRobot.png'
     robotMax = 'images/unitRobotMax.png'
@@ -153,7 +154,7 @@ class UnitImage:
             # meteor,
             meteorMax,
             # minotaur,
-            minotaurMax, monk, monkMax, ridingHood, ridingHoodMax,
+            minotaurMax, monk, monkMax, ridingHood, ridingHood_ALT, ridingHoodMax,
             robot, robotMax, scrapper, stasis, seadog, seadogMax, shaman,
             # spiritMaster,
             spiritMasterMax, spiritMasterMax_ALT, summoner, summonerMax,
