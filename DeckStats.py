@@ -7,7 +7,8 @@ import yaml
 from modules.images import *
 from modules.counter import Counter
 from modules.gsheet import *
-from modules.styles import Style, TopTrophy, MaxCrit
+from modules.styles import TopTrophy, MaxCrit, RhandumLeague
+from modules.rushroyale_stats import RushRoyaleStats
 
 def get_format():
     with open('setting.yml', 'r') as yml:
@@ -17,20 +18,30 @@ def get_format():
 def set_style():
     with open('setting.yml', 'r') as yml:
         data = yaml.safe_load(yml)
-    s = TopTrophy()
+    s = RhandumLeague() #  TopTrophy()
     s.import_from(data['style'])
     return s
 
 def main():
+    # 1. catalogue decks of
+    #   a. Top Trophy
+    #   b. Rhandum League
+    #   c. Tournament
+    # 2. Summary
+    # 3. Do all if no parameters given
+    #
     s = set_style()
     f = get_format()
+
+    rr = RushRoyaleStats(s, f)
+    # rr.connect_googlesheet()
 
     # set timer
     chk = []
     lap(chk)
 
     # connect to Google sheet, then open/create sheet
-    ws = none if s.dryrun else connect_sheet(s.style_type)
+    ws = None if s.dryrun else connect_sheet(s.style_type)
     lap(chk)
     print(f"Phase1(connecting to Googlesheet): {fmt(chk[-1], chk[-2])} sec.")
 
