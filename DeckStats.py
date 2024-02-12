@@ -25,16 +25,9 @@ def set_style():
     return _s
 
 def main():
-    # 1. catalogue decks of
-    #   a. Top Trophy
-    #   b. Rhandum League
-    #   c. Tournament
-    # 2. Summary
-    # 3. Do all if no parameters given
-    s = set_style()
-    f = get_format()
-
+    s, f = set_style(), get_format()
     rr = RushRoyaleStats(s, f)
+    print(f"Start to catalogue {s.style_type} deck")
 
     # set timer
     chk = []
@@ -94,7 +87,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, f:dict):
         d = [_i+1]
         if _s.lines_only and (_i+1 not in _s.lines_only): continue
         format = f['normal']
-        if len(_d[0]) != 1 or len(_d[1]) != 5: 
+        if len(_d[0]) != 1 or len(_d[1]) != 5:
             d[0] = f"!ERROR! - {d[0]}"
             format = f['error']
         d += ["-"] if len(_d[0]) != 1 else _d[0]
