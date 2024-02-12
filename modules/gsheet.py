@@ -46,14 +46,14 @@ class Worksheet:
 
     def __init__(self, ws):
         self.ws = ws
-    
+
     def update(self, range_name, values, format = default_format):
         self.ws.update(range_name=range_name, values=values)
         self.ws.format(range_name, format)
-    
+
     def clear(self, range):
         self.ws.batch_clear(range)
-    
+
     def clear_all(self):
         self.ws.clear()
 

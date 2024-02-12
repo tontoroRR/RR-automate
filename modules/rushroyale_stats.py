@@ -97,7 +97,7 @@ class UnitList:
                 'Witch',
                 'Shaman'
             ]
-    
+
 class Unit:
     name = None
     type = UnitType.NONE
@@ -124,7 +124,7 @@ class Talent:
     level = ""
     rightLeft = TalentLeftRight.LEFT
 
-Units = []   
+Units = []
 Unit.createAllUnits(Units)
 
 

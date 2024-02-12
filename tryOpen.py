@@ -24,7 +24,6 @@ while True:
     time.sleep(0.3)
     _o.exist_click('images/rhandumLeagueCard.png', 0.2)
     time.sleep(0.3)
-        
 
 # while True:
 #     time.sleep(1)
