@@ -1,16 +1,11 @@
 style:
-  #
-  #  target_module is one of
-  #  * TopTrophy
-  #  * MaxCrit
-  #  * RhandumLeague
-  #
-  target_module: TopTrophy
-  total_line: 25
-  lines_only: [101]
-  # lines_range: ""
-  #   min: 0
-  #   max: 0
+  target_module: TopTrophy # TopTrophy / MaxCrit / RhandumLeague / PastSeasonLeader
+  total_line: 1
+  lines_only: [1]
+  dryrun: false
+    # lines_range: 
+    # min: 36
+    # max: 100
   # adjust_scroll_up: 1.08
 
 format:

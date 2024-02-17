@@ -15,9 +15,12 @@ class Style:
     pause = 0.2
     heros = HeroImage.all
     units = UnitImage.all
+    dryrun = False
+
+    buttonSeq = [menus, btn_leaderboards]
 
     # need to set at child class
-    style_type = None
+    style_type = None 
 
     tab = None
     banner = None
@@ -33,18 +36,15 @@ class Style:
     card_tab = None # No need to click
     cards_region = (-225, 40, 450, 330)
 
-    # parameters related to behavior of
+    # need to inject from outside
     lines_only = []
+
     do_scroll_not_found = False
-    buttonSeq = [menus, btn_leaderboards]
-    dryrun = False
+
     DEBUG = False
     sleep_at_end = 0
 
-    # TODO: These shoudl be moved to Deck class
-    # Googlesheet
     title_deck_table = [["Rank", "Hero", "Unit1", "Unit2", "Unit3", "Unit4", "Unit5"]]
-    # MySQL columns --
 
     def import_from(self, yml:dict):
         for k, v in yml.items(): setattr(self, k, v)
@@ -55,25 +55,36 @@ class Style:
         return None
 
 class TopTrophy(Style):
-    style_type = "Top Trophy"
-
+    style_type = "Top Trophy" 
+        
     tab = BtnImage.totalTrophyTab
     banner = LabelImage.totalTrophy
-    badge1st = [LabelImage.totalTrophyBadge1st, LabelImage.totalTrophyBadge1st_ALT]
+    badge1st = LabelImage.totalTrophyBadge1st
 
     line_height= 71
     lines_per_page = 7
     last_line_y = 810
     total_line = 1
-
     adjust_scroll_up = 1.0925
 
     def __init__(self):
         self.buttonSeq.append(self.tab)
         self.buttonSeq.append(self.banner)
 
+class PastSeasonLeader(TopTrophy):
+    style_type = "Past Season Leader"
+
+    tab = 'images/pastLeadersBtn.png'
+    banner = 'images/pastTotalTrophies.png'
+
+    lines_per_page = 9
+    last_line_y = 904
+
+    def __init__(self):
+        super().__init__()
+
 class MaxCrit(Style):
-    style_type = "Max Crit"
+    style_type = "Max Crit" 
 
     tab = BtnImage.maxCritTab
     banner = LabelImage.maxCrit
@@ -83,7 +94,6 @@ class MaxCrit(Style):
     lines_per_page = 8
     last_line_y = 860
     total_line = 1
-
     adjust_scroll_up = 1.11
 
     def __init__(self):
@@ -92,25 +102,21 @@ class MaxCrit(Style):
 
 class RhandumLeague(Style):
     style_type = "Rhandum League"
-
-    card_tab = 'images/rhandumLeagueTab.png'
-    badge1st = ['images/rhandumLeague1stBadge.png', 'images/rhandumLeague1stClosedBadge.png']
+    badge1st = 'images/rhandumLeague1stBadge.png'
 
     line_height= 86
     lines_per_page = 5
     last_line_y = 480
     total_line = 1
-
-
     adjust_scroll_up = 1.08
-
     do_scroll_not_found = True
 
+    card_tab = 'images/rhandumLeagueTab.png'
     def __init__(self):
         self.buttonSeq = [
-                    'images/eventTab.png',
-                    [ 'images/rhandumLeagueCard.png','images/rhandumLeagueClosedCard.png' ],
-                    'images/rhandumLeagueLabel.png'
+                "images/eventTab.png",
+                "images/rhandumLeagueCard.png",
+                'images/rhandumLeagueLabel.png'
                 ]
     def special_operation(self):
         return "click_top100_for_RL"
