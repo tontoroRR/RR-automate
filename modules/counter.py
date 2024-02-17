@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 import subprocess
 import time
 import pyautogui
@@ -10,7 +9,8 @@ import threading
 from collections import deque
 
 from modules.styles import Style
-from modules.images import UnitConverter as uc
+from modules.utils import Utils as ut
+# from modules.images import UnitConverter as uc
 
 import pdb
 
@@ -20,10 +20,7 @@ class Counter:
     style = None
     op = None
     card_y = 565
-
-    def convert(self, ary: list):
-        l = list(map(uc.convert_img_to_name, ary))
-        return list(set(l))
+    _line_num = 0
 
     def __init__(self, s: Style = None):
         self.op = Operation()
@@ -65,65 +62,67 @@ class Counter:
     def _get_region(self):
         return self.style.app_region
 
-    def take_screenshot(self, num: int):
-        _img = pyautogui.screenshot(region=self.style.app_region)
-        name = f"{os.environ['USERPROFILE']}\\errors\\#{num}_" + datetime.now().strftime('%Y-%m-%d_%H%M%S.%f.png')
-        _img.save(name)
-        pass
+    def _remove_duplicates(self, _units:list):
+        _maxed =  [_u.replace('(Max)', '') for _u in _units if 'Max' in _u]
+        return [_u for _u in _units if _u not in _maxed]
 
-    def get_user_deck(self, num: int):
+
+    def _get_user_deck(self):
         hero = []
         units = []
         _region = self.op.REGION
         self.op.set_region(self._get_region())
-        hero = self.convert(self.op.find_any_thread(self.style.heros))
-        units = self.convert(self.op.find_any_thread(self.style.units))
+        hero = ut.convert(self.op.find_any_thread(self.style.heros))
+        units = ut.convert(self.op.find_any_thread(self.style.units))
         self.op.set_region(_region)
-        print(hero, len(hero), units, len(units))
-        if len(hero) == 0 or len(units) < 5:
-            self.take_screenshot(num)
+        # print(hero, len(hero), units, len(units))
+        units = self._remove_duplicates(units)
+        if len(hero) != 1 or len(units) != 5:
+            ut.take_screenshot(self._line_num, _region = self.style.app_region)
+        # print(hero, len(hero), units, len(units))
         return (hero, sorted(units))
 
     def click_top100_for_RL(self):
         pass
 
-    def open_and_get_deck(self):
-        pass
+    def _open_profile(self):
+        pyautogui.click()
+        if self.style.card_tab:
+            _pos = pyautogui.position()
+            self.op.exist_click(self.style.card_tab, 1)
+            pyautogui.moveTo(_pos)
+        self.op.drag_image_to(-1, self.card_y, self.style.cards)
 
     def count(self):
         cur_line = 1
         plus_lines = 0
         for _n in range(1, self.style.total_line + 1):
+            self._line_num = _n
             pos_y = pyautogui.position()[1]
-            cur_line = _n % self.style.lines_per_page
+            cur_line = self._line_num % self.style.lines_per_page
             if cur_line == 0:
                 cur_line = self.style.lines_per_page
             old_cur_line = cur_line
             cur_line = cur_line + plus_lines
-            print('count: ', _n, pos_y, old_cur_line, cur_line, plus_lines)
+            print('count: ', self._line_num, pos_y, old_cur_line, cur_line, plus_lines)
             # first get deck
-            if all([len(self.style.lines_only), (_n not in self.style.lines_only)]):
+            if all([len(self.style.lines_only), (self._line_num not in self.style.lines_only)]):
                 yield([])
             elif self.style.dryrun:
                 yield((['hero'], ['unit1', 'unit2', 'unit3', 'unit4', 'unit5']))
             else:
-                pyautogui.click()
-                if self.style.card_tab:
-                    _pos = pyautogui.position()
-                    self.op.exist_click(self.style.card_tab, 1)
-                    pyautogui.moveTo(_pos)
-                self.op.drag_image_to(-1, self.card_y, self.style.cards)
-                yield(self.get_user_deck(_n))
+                self._open_profile()
+                yield(self._get_user_deck())
                 pyautogui.press('esc')
             # next, move or scroll up
             if cur_line < self.style.lines_per_page:
                 self.op.moveTo_line_n(cur_line + 1)
-            elif _n == self.style.total_line:
+            elif self._line_num == self.style.total_line:
                 pass
             else:
-                # at last line
-                lines_remained = self.style.total_line - _n
-                print(_n, pos_y, cur_line, 'remained:', lines_remained)
+                # at last line of page
+                lines_remained = self.style.total_line - self._line_num
+                print(self._line_num, pos_y, cur_line, 'remained:', lines_remained)
                 if self.style.lines_per_page <= lines_remained:
                     self.op.scrollup_slow(self.style.lines_per_page)
                     self.op.moveTo_first_line()
@@ -131,7 +130,7 @@ class Counter:
                     self.op.scrollup_slow(lines_remained)
                     plus_lines = self.style.lines_per_page - lines_remained
                     self.op.moveTo_line_n(self.style.lines_per_page - lines_remained + 1)
-            if (_n == self.style.total_line): time.sleep(self.style.sleep_at_end)
+            if (self._line_num == self.style.total_line): time.sleep(self.style.sleep_at_end)
 
     def back_to_top(self):
         while not(self.op.exists(self.style.btn_battle)):

@@ -4,11 +4,18 @@ __pycache__/
 *$py.class
 
 .tool-version
+
+# For my project only
+# --- from here
 secrets/*
 !secrets/README.md
 tools/.env*
 
 20*.csv
+images/errors/*
+
+
+# --- to
 
 # C extensions
 *.so
