@@ -10,7 +10,6 @@ from collections import deque
 
 from modules.styles import Style
 from modules.utils import Utils as ut
-# from modules.images import UnitConverter as uc
 
 import pdb
 
@@ -63,6 +62,7 @@ class Counter:
         return self.style.app_region
 
     def _remove_duplicates(self, _units:list):
+        _units = list(set(_units))
         _maxed =  [_u.replace('(Max)', '') for _u in _units if 'Max' in _u]
         return [_u for _u in _units if _u not in _maxed]
 
@@ -72,10 +72,13 @@ class Counter:
         units = []
         _region = self.op.REGION
         self.op.set_region(self._get_region())
-        hero = ut.convert(self.op.find_any_thread(self.style.heros))
-        units = ut.convert(self.op.find_any_thread(self.style.units))
+        #hero = ut.convert(self.op.find_any_thread(self.style.heros.keys))
+        #units = ut.convert(self.op.find_any_thread(self.style.units.keys))
+        hero = [self.style.heros[k] for k in self.op.find_any_thread(self.style.heros.keys())]
+        units = [self.style.units[k] for k in self.op.find_any_thread(self.style.units.keys())]
         self.op.set_region(_region)
         # print(hero, len(hero), units, len(units))
+        hero = self._remove_duplicates(hero)
         units = self._remove_duplicates(units)
         if len(hero) != 1 or len(units) != 5:
             ut.take_screenshot(self._line_num, _region = self.style.app_region)
@@ -91,7 +94,8 @@ class Counter:
             _pos = pyautogui.position()
             self.op.exist_click(self.style.card_tab, 1)
             pyautogui.moveTo(_pos)
-        self.op.drag_image_to(-1, self.card_y, self.style.cards)
+        if self.op.exists(self.style.cards):
+            self.op.drag_image_to(-1, self.card_y, self.style.cards)
 
     def count(self):
         cur_line = 1

@@ -101,7 +101,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f:dict):
             if _s.lines_only and (_i+1 not in _s.lines_only): continue
             _format = _f['normal']
             if len(_d[0]) != 1 or len(_d[1]) != 5:
-                _deck[0], _format = f"!ERROR! - {_d[0]}", _f['error']
+                _deck[0], _format = f"!ERROR! - {_deck[0]}", _f['error']
             _deck += ["-"] if len(_d[0]) != 1 else _d[0]
             _deck += _d[1] + ["-"] * (5 - len(_d[1]))
             print(_deck)
@@ -110,7 +110,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f:dict):
                 _t.start()
                 ts.append(_t)
     except Exception as e:
-        ut.log_exception()
+        ut.log_exception(_i)
         raise e
     for t in ts: t.join() # wait all thread finished
 

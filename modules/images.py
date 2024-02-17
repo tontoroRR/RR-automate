@@ -24,12 +24,29 @@ class LabelImage:
     bestPlayer = 'images/bestPlayer.png'
     top90 = 'images/top90.png'
 
-class HeroImage:
-    all = []
-    for _d in glob.glob('images/hero/*/*'):
-        all.append(_d)
+class Converter:
+    __CONVERTS: dict = {
+            '_ALT_' : '',
+            'images/(.+)/(.+)/(.+).png': r'\3', # \1 = unit/hero, \2 = rareity, \3 = name
+            'Max' : '(Max)',
+            }
 
-class UnitImage:
-    all = []
+    def convert_img_to_name(_name: str):
+        name = _name
+        for _reg, _str in Converter.__CONVERTS.items():
+            name = re.sub(_reg, _str, name)
+        return name
+
+class HeroImage(Converter):
+    all = {}
+    for _d in glob.glob('images/hero/*/*'):
+        _d = _d.replace('\\', '/')
+        all[_d] = Converter.convert_img_to_name(_d)
+    print(len(all))
+
+class UnitImage(Converter):
+    all = {}
     for _d in glob.glob('images/unit/*/*'):
-        all.append(_d)
+        _d = _d.replace('\\', '/')
+        all[_d] = Converter.convert_img_to_name(_d)
+    print(len(all))

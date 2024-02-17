@@ -28,9 +28,9 @@ class Utils:
         return list(set(l))
 
     @staticmethod
-    def log_exception():
+    def log_exception(_num:int = 0):
         print("mouse poistion: ", pyautogui.position())
-        Utils.take_screenshot(0, True)
+        Utils.take_screenshot(_num, True)
         
     @staticmethod
     def take_screenshot(_num:int = 0, _cursor:bool = False, _region = None):
@@ -40,20 +40,3 @@ class Utils:
             _img = pyautogui.screenshot(region=_region)
         name = f"U:\\home\\phoi\\errors\\{datetime.now().strftime('%Y-%m-%d_%H%M%S')}_#{str(_num).zfill(4)}.png"
         _img.save(name)
-
-
-class UnitConverter:
-    __DICT: dict = {
-            '\\\\': '/',
-            '_ALT_' : '',
-            'images/(.+)/(.+)/(.+).png': r'\3', # \1 = unit/hero, \2 = rareity, \3 = name
-            'Max' : '(Max)',
-            }
-
-    @staticmethod
-    def convert_img_to_name(_name: str):
-        name = _name
-        for _reg, _str in UnitConverter.__DICT.items():
-            print(name)
-            name = re.sub(_reg, _str, name)
-        return name
