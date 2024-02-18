@@ -9,17 +9,20 @@ load_dotenv(verbose=True)
 load_dotenv(".env")
 
 # ここでjsonfile名と2-2で用意したkeyを入力
-jsonf = os.environ.get('jsonfile')
-sheet_key = os.environ.get('leaderboards_secret_key')
-scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+jsonf = os.environ.get("jsonfile")
+sheet_key = os.environ.get("leaderboards_secret_key")
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/drive",
+]
 credentials = ServiceAccountCredentials.from_json_keyfile_name(jsonf, scope)
 gc = gspread.authorize(credentials)
 sheet = gc.open_by_key(sheet_key)
 
-#(2) Google Spread Sheets上の値を更新
-#(２−１)あるセルの値を更新（行と列を指定）
+# (2) Google Spread Sheets上の値を更新
+# (２−１)あるセルの値を更新（行と列を指定）
 ws = sheet.sheet1
-ws.update(range_name='A1', values=[[1,2,3,4]])
+ws.update(range_name="A1", values=[[1, 2, 3, 4]])
 
 """
 ws.update_cell(1,1,"test1")

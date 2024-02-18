@@ -1,25 +1,30 @@
 import time
 import datetime
-import easygui
+# import easygui
 import threading
 import yaml
 from importlib import import_module
 # import argparse
 
 from modules.counter import Counter
-from modules.gsheet import *
-from modules.rushroyale_stats import RushRoyaleStats
+from modules.gsheet import Worksheet, Spreadsheet
 from modules.utils import Utils as ut
+# from modules.rushroyale_stats import RushRoyaleStats
+
 
 def set_argument_parser():
     pass
-    #_parser = argparse.ArgumentParser()
-    #return _parser
+    """
+    _parser = argparse.ArgumentParser()
+    return _parser
+    """
+
 
 def get_format():
     with open('setting.yml', 'r') as _yml:
         _d = yaml.safe_load(_yml)
     return _d['format']
+
 
 def set_style():
     with open('setting.yml', 'r') as _yml:
@@ -29,10 +34,11 @@ def set_style():
     _s.import_from(_d['style'])
     return _s
 
+
 def main():
     s, f = set_style(), get_format()
-    parser = set_argument_parser()
-    rr = RushRoyaleStats(s, f)
+    # parser = set_argument_parser()
+    # rr = RushRoyaleStats(s, f)
 
     print(f"Start to catalogue {s.style_type} deck")
 
@@ -44,14 +50,15 @@ def main():
     ws = None if s.dryrun else connect_sheet(s.style_type)
     lap(chk)
 
-    print(f"Phase1(connecting to Googlesheet): {fmt(chk[-1], chk[-2])} sec.")
+    print(f"Phase1(connecting to Googlesheet): {fmt_l(chk)} sec.")
 
     if not s.dryrun:
         _today = datetime.datetime.now().strftime("%Y%m%d")
         ws.prepare_sheet(_today)
-        if not s.lines_only: ws.clear_region()
+        if not s.lines_only:
+            ws.clear_region()
         ws.update(ws.start_column+"1", [[_today, s.style_type]])
-        print(f"Phase2(prepare sheet as of {_today}): {fmt(chk[-1], chk[-2])} sec.")
+        print(f"Phase2(prepare sheet as of {_today}): {fmt_l(chk)} sec.")
     lap(chk)
 
     # open App
@@ -60,11 +67,11 @@ def main():
         c.focus_app()
         c.open_ranking()
         lap(chk)
-        print(f"Phase3(Open RushRoyale app): {fmt(chk[-1], chk[-2])} sec.")
+        print(f"Phase3(Open RushRoyale app): {fmt_l(chk)} sec.")
         log_decks_to_gsheet(c, ws, f)
         lap(chk)
         c.back_to_top()
-        print(f"Phase4(Catalogue Decks): {fmt(chk[-1], chk[-2])} sec.")
+        print(f"Phase4(Catalogue Decks): {fmt_l(chk)} sec.")
     except Exception as e:
         ut.log_exception()
         raise e
@@ -76,6 +83,7 @@ def main():
     # easygui.msgbox(lastMsg)
     pass
 
+
 def connect_sheet(_sheet_type: str) -> Worksheet:
     print("connecting google sheet....")
     _ss = Spreadsheet()
@@ -84,21 +92,32 @@ def connect_sheet(_sheet_type: str) -> Worksheet:
     print("connected sheet and created '" + _sheet_name + "'!")
     return ws
 
-def lap(chk:list = []):
+
+def lap(chk: list = []):
     chk.append(time.time())
     return chk
+
+
+def fmt_l(chk: list) -> str:
+    return fmt(chk[-1], chk[-2])
+
 
 def fmt(et: float, st: float) -> str:
     return str(round(et - st, 3))
 
-def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f:dict):
+
+def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict):
     ts = []
     _s = c.style
-    if not _s.dryrun: ws.update(f"{ws.start_column}2", _s.title_deck_table)
+    _ln = 0
+    if not _s.dryrun:
+        ws.update(f"{ws.start_column}2", _s.title_deck_table)
     try:
         for _i, _d in enumerate(c.count()):
-            _deck = [_i+1]
-            if _s.lines_only and (_i+1 not in _s.lines_only): continue
+            _ln = _i + 1
+            _deck = [_ln]
+            if _s.lines_only and (_ln not in _s.lines_only):
+                continue
             _format = _f['normal']
             if len(_d[0]) != 1 or len(_d[1]) != 5:
                 _deck[0], _format = f"!ERROR! - {_deck[0]}", _f['error']
@@ -106,13 +125,17 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f:dict):
             _deck += _d[1] + ["-"] * (5 - len(_d[1]))
             print(_deck)
             if not _s.dryrun:
-                _t = threading.Thread(target=ws.update, args=(ws.start_column + str(_i+3), [_deck], _format,))
+                _t = threading.Thread(
+                    target=ws.update,
+                    args=(ws.start_column + str(_ln+2), [_deck], _format,))
                 _t.start()
                 ts.append(_t)
     except Exception as e:
-        ut.log_exception(_i)
+        ut.log_exception(_ln)
         raise e
-    for t in ts: t.join() # wait all thread finished
+    for t in ts:
+        t.join()  # wait all thread finished
+
 
 if __name__ == "__main__":
     main()
