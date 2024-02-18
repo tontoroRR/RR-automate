@@ -1,6 +1,7 @@
-from modules.images import *
+from modules.images import BtnImage, LabelImage, HeroImage, UnitImage
 
 import pdb
+
 
 class Style:
     app_name = "Rush Royale"
@@ -20,7 +21,7 @@ class Style:
     buttonSeq = [menus, btn_leaderboards]
 
     # need to set at child class
-    style_type = None 
+    style_type = None
 
     tab = None
     banner = None
@@ -28,12 +29,12 @@ class Style:
 
     line_height = None
     lines_per_page = None
-    last_line_y= None
+    last_line_y = None
     adjust_scroll_up = 0
     total_line = 0
     card_y = 565
 
-    card_tab = None # No need to click
+    card_tab = None  # No need to click
     cards_region = (-225, 40, 450, 330)
 
     # need to inject from outside
@@ -44,24 +45,32 @@ class Style:
     DEBUG = False
     sleep_at_end = 0
 
-    title_deck_table = [["Rank", "Hero", "Unit1", "Unit2", "Unit3", "Unit4", "Unit5"]]
+    title_deck_table = [
+        ["Rank", "Hero", "Unit1", "Unit2", "Unit3", "Unit4", "Unit5"]
+    ]
 
-    def import_from(self, yml:dict):
-        for k, v in yml.items(): setattr(self, k, v)
-        if hasattr(self, 'lines_range') and all(['min' in self.lines_range, 'max' in self.lines_range]):
-            self.lines_only = list(range(self.lines_range['min'], self.lines_range['max'] + 1))
+    def import_from(self, yml: dict):
+        for k, v in yml.items():
+            setattr(self, k, v)
+        if hasattr(self, "lines_range") and all(
+            ["min" in self.lines_range, "max" in self.lines_range]
+        ):
+            self.lines_only = list(
+                range(self.lines_range["min"], self.lines_range["max"] + 1)
+            )
 
     def special_operation(self):
         return None
 
+
 class TopTrophy(Style):
-    style_type = "Top Trophy" 
-        
+    style_type = "Top Trophy"
+
     tab = BtnImage.totalTrophyTab
     banner = LabelImage.totalTrophy
     badge1st = LabelImage.totalTrophyBadge1st
 
-    line_height= 71
+    line_height = 71
     lines_per_page = 7
     last_line_y = 810
     total_line = 1
@@ -71,11 +80,12 @@ class TopTrophy(Style):
         self.buttonSeq.append(self.tab)
         self.buttonSeq.append(self.banner)
 
+
 class PastSeasonLeader(TopTrophy):
     style_type = "Past Season Leader"
 
-    tab = 'images/pastLeadersBtn.png'
-    banner = 'images/pastTotalTrophies.png'
+    tab = "images/pastLeadersBtn.png"
+    banner = "images/pastTotalTrophies.png"
 
     lines_per_page = 9
     last_line_y = 904
@@ -83,14 +93,15 @@ class PastSeasonLeader(TopTrophy):
     def __init__(self):
         super().__init__()
 
+
 class MaxCrit(Style):
-    style_type = "Max Crit" 
+    style_type = "Max Crit"
 
     tab = BtnImage.maxCritTab
     banner = LabelImage.maxCrit
     badge1st = LabelImage.maxCritBadge1st
 
-    line_height= 67
+    line_height = 67
     lines_per_page = 8
     last_line_y = 860
     total_line = 1
@@ -100,23 +111,26 @@ class MaxCrit(Style):
         self.buttonSeq.append(self.tab)
         self.buttonSeq.append(self.banner)
 
+
 class RhandumLeague(Style):
     style_type = "Rhandum League"
-    badge1st = 'images/rhandumLeague1stBadge.png'
+    badge1st = "images/rhandumLeague1stBadge.png"
 
-    line_height= 86
+    line_height = 86
     lines_per_page = 5
     last_line_y = 480
     total_line = 1
     adjust_scroll_up = 1.08
     do_scroll_not_found = True
 
-    card_tab = 'images/rhandumLeagueTab.png'
+    card_tab = "images/rhandumLeagueTab.png"
+
     def __init__(self):
         self.buttonSeq = [
-                "images/eventTab.png",
-                "images/rhandumLeagueCard.png",
-                'images/rhandumLeagueLabel.png'
-                ]
+            "images/eventTab.png",
+            "images/rhandumLeagueCard.png",
+            "images/rhandumLeagueLabel.png",
+        ]
+
     def special_operation(self):
         return "click_top100_for_RL"

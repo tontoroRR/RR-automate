@@ -1,6 +1,6 @@
 style:
   target_module: TopTrophy # TopTrophy / MaxCrit / RhandumLeague / PastSeasonLeader
-  total_line: 10
+  total_line: 100
   lines_only: []
   dryrun: false
     # lines_range: 
