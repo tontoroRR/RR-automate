@@ -1,14 +1,16 @@
 import asyncio
 import time
 
+
 class Hoge:
     async def loop(self):
         asyncio.sleep(0.5)
-        print('async')
+        print("async")
         yield 1
 
     def __init__(self):
         pass
+
 
 h = Hoge()
 l = asyncio.get_event_loop()

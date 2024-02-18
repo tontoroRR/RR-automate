@@ -6,3 +6,5 @@ oauth2client
 python-dotenv
 PyYAML
 pymongo
+flake8
+black

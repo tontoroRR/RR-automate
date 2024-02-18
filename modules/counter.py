@@ -1,20 +1,18 @@
-import os
-import subprocess
 import time
 import pyautogui
 import ctypes
+from typing import overload
 
-import asyncio
 import threading
 from collections import deque
 
 from modules.styles import Style
 from modules.utils import Utils as ut
-# from modules.images import UnitConverter as uc
 
 import pdb
 
 pyautogui.PAUSE = 0.2
+
 
 class Counter:
     style = None
@@ -45,16 +43,19 @@ class Counter:
 
     def open_ranking(self):
         for btn in self.style.buttonSeq:
+            self.op.exist_click(btn, 1)
+            """
             if isinstance(btn, list):
                 res = self.op.find_any_thread(btn)
                 if res: self.op.exist_click(res.pop(), 1)
             else:
                 self.op.exist_click(btn, 1)
+            """
 
         self.op.wait(self.style.badge1st, 5)
         x = pyautogui.position()[0]
         y = self.op.get_center(self.style.badge1st)[1]
-        self.op.first_line_pos= (x, y)
+        self.op.first_line_pos = (x, y)
         self.op.moveTo_first_line()
         if self.style.special_operation():
             print(self.style.special_operation())
@@ -62,24 +63,30 @@ class Counter:
     def _get_region(self):
         return self.style.app_region
 
-    def _remove_duplicates(self, _units:list):
-        _maxed =  [_u.replace('(Max)', '') for _u in _units if 'Max' in _u]
+    def _remove_duplicates(self, _units: list):
+        _units = list(set(_units))
+        _maxed = [_u.replace("(Max)", "") for _u in _units if "Max" in _u]
         return [_u for _u in _units if _u not in _maxed]
-
 
     def _get_user_deck(self):
         hero = []
         units = []
+        _style = self.style
         _region = self.op.REGION
         self.op.set_region(self._get_region())
-        hero = ut.convert(self.op.find_any_thread(self.style.heros))
-        units = ut.convert(self.op.find_any_thread(self.style.units))
+        hero = [
+            _style.heros[k]
+            for k in self.op.find_any_thread(list(_style.heros.keys()))
+        ]
+        units = [
+            _style.units[k]
+            for k in self.op.find_any_thread(list(_style.units.keys()))
+        ]
         self.op.set_region(_region)
-        # print(hero, len(hero), units, len(units))
+        hero = self._remove_duplicates(hero)
         units = self._remove_duplicates(units)
         if len(hero) != 1 or len(units) != 5:
-            ut.take_screenshot(self._line_num, _region = self.style.app_region)
-        # print(hero, len(hero), units, len(units))
+            ut.take_screenshot(self._line_num, _region=_style.app_region)
         return (hero, sorted(units))
 
     def click_top100_for_RL(self):
@@ -91,50 +98,65 @@ class Counter:
             _pos = pyautogui.position()
             self.op.exist_click(self.style.card_tab, 1)
             pyautogui.moveTo(_pos)
-        self.op.drag_image_to(-1, self.card_y, self.style.cards)
+        # if self.op.exists(self.style.cards):
+        _card = self.op.wait(self.style.cards, 2)
+        if _card is not None:
+            print(f"{_card} found")
+            self.op.drag_image_to(-1, self.card_y, _card)
+        else:
+            print(f"{self.style.cards} NOT FOUND")
 
     def count(self):
-        cur_line = 1
-        plus_lines = 0
+        cur_l = 1
+        plus_ls = 0
         for _n in range(1, self.style.total_line + 1):
             self._line_num = _n
             pos_y = pyautogui.position()[1]
-            cur_line = self._line_num % self.style.lines_per_page
-            if cur_line == 0:
-                cur_line = self.style.lines_per_page
-            old_cur_line = cur_line
-            cur_line = cur_line + plus_lines
-            print('count: ', self._line_num, pos_y, old_cur_line, cur_line, plus_lines)
-            # first get deck
-            if all([len(self.style.lines_only), (self._line_num not in self.style.lines_only)]):
-                yield([])
+            cur_l = self._line_num % self.style.lines_per_page
+            if cur_l == 0:
+                cur_l = self.style.lines_per_page
+            _cur_l_p = cur_l
+            cur_l = cur_l + plus_ls
+            print(f"count:{self._line_num}", pos_y, _cur_l_p, cur_l, plus_ls)
+            # 1. get deck
+            if all(
+                [
+                    len(self.style.lines_only),
+                    (self._line_num not in self.style.lines_only),
+                ]
+            ):
+                yield ([])
             elif self.style.dryrun:
-                yield((['hero'], ['unit1', 'unit2', 'unit3', 'unit4', 'unit5']))
+                yield ((["hero"], ["unit", "unit", "unit", "unit", "unit"]))
             else:
                 self._open_profile()
-                yield(self._get_user_deck())
-                pyautogui.press('esc')
-            # next, move or scroll up
-            if cur_line < self.style.lines_per_page:
-                self.op.moveTo_line_n(cur_line + 1)
+                yield (self._get_user_deck())
+                pyautogui.press("esc")
+            # 2. move or scroll up
+            if cur_l < self.style.lines_per_page:
+                self.op.moveTo_line_n(cur_l + 1)
             elif self._line_num == self.style.total_line:
                 pass
             else:
-                # at last line of page
-                lines_remained = self.style.total_line - self._line_num
-                print(self._line_num, pos_y, cur_line, 'remained:', lines_remained)
-                if self.style.lines_per_page <= lines_remained:
+                # 3. scroll up if at last line of page
+                ls_remained = self.style.total_line - self._line_num
+                print(self._line_num, pos_y, cur_l, f"remain:{ls_remained}")
+                if self.style.lines_per_page <= ls_remained:
                     self.op.scrollup_slow(self.style.lines_per_page)
                     self.op.moveTo_first_line()
                 else:
-                    self.op.scrollup_slow(lines_remained)
-                    plus_lines = self.style.lines_per_page - lines_remained
-                    self.op.moveTo_line_n(self.style.lines_per_page - lines_remained + 1)
-            if (self._line_num == self.style.total_line): time.sleep(self.style.sleep_at_end)
+                    self.op.scrollup_slow(ls_remained)
+                    plus_ls = self.style.lines_per_page - ls_remained
+                    self.op.moveTo_line_n(
+                        self.style.lines_per_page - ls_remained + 1
+                    )
+            if self._line_num == self.style.total_line:
+                time.sleep(self.style.sleep_at_end)
 
     def back_to_top(self):
-        while not(self.op.exists(self.style.btn_battle)):
-            pyautogui.press('esc')
+        while not (self.op.exists(self.style.btn_battle)):
+            pyautogui.press("esc")
+
 
 class Operation:
     WAIT = 0.1
@@ -143,7 +165,7 @@ class Operation:
     DEBUG = False
     TOOLOW = 650
     REGION = None
-    first_line_pos= (-1, -1)
+    first_line_pos = (-1, -1)
     line_height = 0
     adjust_scroll_up = 0
     do_scroll_not_found = False
@@ -151,79 +173,132 @@ class Operation:
     def __init__(self):
         pass
 
-    def moveTo_line_n(self, n: int):
-        diff = self.line_height * (n - 1)
-        (x, y) = self.first_line_pos
-        y += diff
-        pyautogui.moveTo(x, y)
+    def __dp(self, *values: object):
+        if self.DEBUG:
+            print(values)
 
-    def moveTo_first_line(self):
-        self.moveTo_line_n(1)
+    @overload
+    def __los(self, _img: list, _region=REGION):
+        pass
 
-    def set_region(self, _region):
-        self.REGION = _region
+    @overload
+    def __los(self, _img: str, _region=REGION):
+        pass
 
-    def set_wait(self, _wait):
-        self.WAIT = _wait
-
-    def __los(self, _img, _region = REGION):
+    def __los(self, _img, _region=REGION):
         xy = None
-        if not isinstance(_img, list): _img = [_img]
-        for _i in _img:
+        _imgs = _img if isinstance(_img, list) else [_img]
+        for _img in _imgs:
             try:
-                xy = pyautogui.locateOnScreen(_i, region = _region, confidence = self.CONFIDENCE)
-                if xy is not None: break
-            except pyautogui.ImageNotFoundException: pass
+                xy = pyautogui.locateOnScreen(
+                    _img, region=_region, confidence=self.CONFIDENCE
+                )
+                if xy is not None:
+                    break
+            except pyautogui.ImageNotFoundException:
+                pass
         if xy is not None:
             return xy
         else:
-            raise pyautogui.ImageNotFoundException(_img, _i)
+            raise pyautogui.ImageNotFoundException(_imgs, _img)
 
-    def __dp(self, *values: object):
-        if self.DEBUG: print(values)
-
-    def wait(self, _img, _wait = LONG_WAIT):
-        xy = None
-        start = time.time()
-        while (xy == None):
-            try:
-                xy = self.__los(_img)
-            except pyautogui.ImageNotFoundException:
-                pass
-            if ((time.time() - start) > _wait):
-                self.__dp("not fount ", _img, " after ", _wait, "(s)")
-                raise pyautogui.ImageNotFoundException(_img)
-
-    def __exists(self, _img, _wait = WAIT, _region = REGION):
+    def __exists(self, _img: str, _wait=WAIT, _region=REGION) -> bool:
         self.__dp(_wait)
-        for i in range(int(_wait*10)):
+        for _i in range(int(_wait * 10)):
             try:
                 xy = self.__los(_img, _region)
-                self.__dp(_img, " found")
+                self.__dp(_img, f" found at {xy}")
                 return True
             except pyautogui.ImageNotFoundException:
-                self.__dp(_img, " not found ", i)
+                self.__dp(_img, f" not found {_i}")
                 pass
         return False
 
-    def __click(self, _img:str, _shift:tuple = (0,0)):
+    def __click(self, _img: str, _shift: tuple = (0, 0)):
         try:
             xy = self.__los(_img)
             pos = pyautogui.center(xy)
-            pyautogui.click(pos.x +_shift[0], pos.y + _shift[1])
+            pyautogui.click(pos.x + _shift[0], pos.y + _shift[1])
         except pyautogui.useImageNotFoundException:
             self.__dp(_img, " not found in click")
             raise pyautogui.useImageNotFoundException
 
-    def exists(self, _img:str, _wait:float = WAIT):
-        return self.__exists(_img, _wait)
+    @overload
+    def wait(self, _img: str, _wait=LONG_WAIT) -> str:
+        pass
 
-    def exist_click(self, _img:str, _wait:float = WAIT, _shift:tuple = (0, 0)):
-        if self.__exists(_img, _wait): self.__click(_img, _shift)
+    @overload
+    def wait(self, _img: list, _wait=LONG_WAIT) -> str:
+        pass
 
-    def drag_image_to(self, _x:int = -1, _y:int = -1, _img:str = ""):
+    def wait(self, _img, _wait=LONG_WAIT) -> str:
+        _imgs = _img if isinstance(_img, list) else [_img]
+        xy, res, start = None, [], time.time()
+        for _img in _imgs:
+            is_timeout = False
+            while xy is None and not is_timeout:
+                try:
+                    xy = self.__los(_img)
+                    print(xy)
+                    if xy is not None:
+                        res = _img
+                        break
+                except pyautogui.ImageNotFoundException:
+                    pass
+                if (time.time() - start) > _wait:
+                    self.__dp("not found ", _img, " after ", _wait, "(s)")
+                    is_timeout = True
+                    
+        return res if xy is not None else None
+
+    @overload
+    def exists(self, _img: str, _wait: float = WAIT) -> bool:
+        pass
+
+    @overload
+    def exists(self, _img: list, _wait: float = WAIT) -> bool:
+        pass
+
+    def exists(self, _img, _wait: float = WAIT) -> bool:
+        res = False
+        _imgs = _img if isinstance(_img, list) else [_img]
+        for _img in _imgs:
+            try:
+                res = res or self.__exists(_img, _wait)
+                if res:
+                    return res
+            except Exception as e:
+                print(e)
+        return res
+
+    @overload
+    def exist_click(self,
+                    _img: list,
+                    _wait: float = WAIT,
+                    _shift: tuple = (0, 0)):
+        pass
+
+    @overload
+    def exist_click(self,
+                    _img: str,
+                    _wait: float = WAIT,
+                    _shift: tuple = (0, 0)):
+        pass
+
+    def exist_click(self, _img, _wait: float = WAIT, _shift: tuple = (0, 0)):
+        _imgs = _img if isinstance(_img, list) else [_img]
+        es = []
+        for _img in _imgs:
+            try:
+                if self.__exists(_img, _wait):
+                    self.__click(_img, _shift)
+                    return
+            except Exception as e:
+                es.append(e)
+        raise Exception(es)
+
+    def drag_image_to(self, _x: int = -1, _y: int = -1, _img: str = ""):
         start_pos = pyautogui.position()
-        self.wait(_img)
         xy = pyautogui.center(self.__los(_img))
         if xy[1] <= self.TOOLOW:
             pass
@@ -240,26 +315,44 @@ class Operation:
         dy = -1 * int(self.line_height * lines * self.adjust_scroll_up)
         pyautogui.mouseDown()
         time.sleep(0.2)
-        pyautogui.move(0, dy, 0.6) #, pyautogui.easeInQuad)
+        pyautogui.move(0, dy, 0.6)  # , pyautogui.easeInQuad)
         time.sleep(0.35)
         pyautogui.mouseUp()
 
-    def find_any_thread(self, _imgs: list, _wait:float = WAIT):
-        def find_worker(_i:str, _d:list):
-            if self.__exists(_i, _wait): _d[_i] = 1
-        ts = []
-        q = deque()
-        for _i in _imgs: q.append({_i: 0})
+    @overload
+    def find_any_thread(self, _img: list, _wait: float = WAIT) -> list:
+        pass
+
+    @overload
+    def find_any_thread(self, _img: str, _wait: float = WAIT) -> list:
+        pass
+
+    def find_any_thread(self, _img, _wait: float = WAIT) -> list:
+        _imgs = _img if isinstance(_img, list) else [_img]
+
+        def find_worker(_i: str, _d: list):
+            if self.__exists(_i, _wait):
+                _d[_i] = 1
+
+        ts, q = [], deque()
+        for _i in _imgs:
+            q.append({_i: 0})
         for _d in q:
             _i = list(_d.keys())[0]
-            t = threading.Thread(target=find_worker, args=(_i, _d,), daemon=True)
+            t = threading.Thread(
+                target=find_worker,
+                args=(_i, _d, ),
+                daemon=True,
+            )
             t.start()
             ts.append(t)
-        for t in ts: t.join()
+        for t in ts:
+            t.join()
         res = []
         for _d in q:
             for k, v in _d.items():
-                if v > 0: res.append(k)
+                if v > 0:
+                    res.append(k)
         return res
 
     def get_top_left(self, _img):
@@ -275,3 +368,17 @@ class Operation:
         xy = pyautogui.center(self.__los(_img))
         return xy
 
+    def moveTo_line_n(self, n: int):
+        diff = self.line_height * (n - 1)
+        (x, y) = self.first_line_pos
+        y += diff
+        pyautogui.moveTo(x, y)
+
+    def moveTo_first_line(self):
+        self.moveTo_line_n(1)
+
+    def set_region(self, _region):
+        self.REGION = _region
+
+    def set_wait(self, _wait):
+        self.WAIT = _wait
