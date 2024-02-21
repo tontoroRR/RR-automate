@@ -12,9 +12,7 @@ class Hoge:
         pass
 
 
-h = Hoge()
-l = asyncio.get_event_loop()
-ts = []
+h, l, ts = Hoge(), asyncio.get_event_loop(), []
 for i in range(10):
     ts.append(h.loop())
 tasks = asyncio.wait(ts)

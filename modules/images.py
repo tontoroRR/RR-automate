@@ -32,7 +32,7 @@ class LabelImage:
 class Converter:
     __CONVERTS: dict = {
         "_ALT_": "",
-        # \1 = unit/hero, \2 = rareity, \3 = name
+        # \1 = unit/hero, \2 = rarity, \3 = name
         "images/(.+)/(.+)/(.+).png": r"\3",
         "Max": "(Max)",
     }
@@ -49,7 +49,6 @@ class HeroImage(Converter):
     for _d in glob.glob("images/hero/*/*"):
         _d = _d.replace("\\", "/")
         all[_d] = Converter.convert_img_to_name(_d)
-    print(len(all))
 
 
 class UnitImage(Converter):
@@ -57,4 +56,3 @@ class UnitImage(Converter):
     for _d in glob.glob("images/unit/*/*"):
         _d = _d.replace("\\", "/")
         all[_d] = Converter.convert_img_to_name(_d)
-    print(len(all))

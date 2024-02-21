@@ -52,12 +52,10 @@ class Style:
     def import_from(self, yml: dict):
         for k, v in yml.items():
             setattr(self, k, v)
-        if hasattr(self, "lines_range") and all(
-            ["min" in self.lines_range, "max" in self.lines_range]
-        ):
-            self.lines_only = list(
-                range(self.lines_range["min"], self.lines_range["max"] + 1)
-            )
+        if hasattr(self, "lines_range"):
+            min, max = self.lines_range["min"], self.lines_range["max"]
+            if any([0 < min, 0 < max]):
+                self.lines_only = list(min, max)
 
     def special_operation(self):
         return None
