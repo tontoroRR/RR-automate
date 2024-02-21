@@ -3,9 +3,9 @@ style:
   total_line: 100
   lines_only: []
   dryrun: false
-    # lines_range: 
-    # min: 36
-    # max: 100
+  lines_range: 
+    min: 0
+    max: 0
   # adjust_scroll_up: 1.08
 
 format:

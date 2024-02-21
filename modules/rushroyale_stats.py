@@ -1,13 +1,38 @@
 # stats information of Rush Royale, say Units, Heros, User Info, Event
 from enum import Enum
-from modules.styles import Style
+
+import yaml
+import glob
+
+import pdb
 
 
 class RushRoyaleStats:
-    def __init__(self, style: Style, format: dict):
-        self.style = style
-        self.format = format
+    units = {}
+
+    def __init__(self):
         pass
+
+    def read_style(self):
+        pass
+
+    def read_format(self):
+        pass
+
+    def setup(self):
+        self.create_units()
+        self.read_images()
+
+    def create_units(self):
+        with open('resources/units.yml', 'r') as _f:
+            _us = yaml.safe_load(_f)
+            for _k, _d in _us['unit'].items():
+                self.units[_k] = Unit(_k, _d)
+
+    def read_images(self):
+        for _u in self.units.values():
+            _u.read_images()
+
 
 
 class UnitType(Enum):
@@ -18,116 +43,57 @@ class UnitType(Enum):
     SPECIAL = 8
     TOXIC = 16
 
+    @staticmethod
+    def read(_v: str) -> 'UnitType':
+        match _v:
+            case 'Damage':
+                return UnitType.DAMAGE
+            case 'Debuff':
+                return UnitType.DEBUFF
+            case 'Support':
+                return UnitType.SUPPORT
+            case 'SPECIAL':
+                return UnitType.SPECIAL
+        return UnitType.NONE
 
-# TODO: move them to JSON or Yaml
-class UnitList:
-    # Common 9 units
-    common_name = [
-        "Archer",
-        "Bombardier",
-        "Cold Mage",
-        "Fier Mage",
-        "Hunter",
-        "Lightning Mage",
-        "Poisoner",
-        "Rogue",
-        "Thrower",
-    ]
-    # Rare 9 units
-    rare_names = [
-        "Alchemist",
-        "Banner",
-        "Magic Cauldron",
-        "Chemist",
-        "Grindstone",
-        "Priestess",
-        "Sentry",
-        "Sharpshooter" "Zealot",
-    ]
-    # Epic 17 units
-    epic_names = [
-        "Catapult",
-        "Clown",
-        "Crystalmancer",
-        "Earth Elemental",
-        "Cold Elemental",
-        "Engineer",
-        "Gargoyle",
-        "Executionar",
-        "Mime",
-        "Plague Doctor",
-        "Ivy" "Portal Keeper",
-        "Pyrotechnic",
-        "Portal Mage",
-        "Thunderer",
-        "Vampire",
-        "Wind Archer",
-    ]
-    # Legendary 31 units
-    legendary_names = [
-        "Banshee",
-        "Bruiser",
-        "Blade Dancer",
-        "Boreas",
-        "Corsair",
-        "Cultist",
-        "Demon Hunter",
-        "Demonologist",
-        "Spirit Master",
-        "Dryad",
-        "Frost",
-        "Harleyquin",
-        "Inquisitor",
-        "Genie",
-        "Hex",
-        "Knight Status",
-        "Clock of Power",
-        "Meteor",
-        "Minotaur",
-        "Monk",
-        "Enchanted Sword",
-        "Riding Hood",
-        "Robot",
-        "Scrapper",
-        "Stasis",
-        "Summoner",
-        "Tesla",
-        "Trapper",
-        "Sea Dog",
-        "Witch",
-        "Shaman",
-    ]
+
+class Rarity(Enum):
+    NONE = 0
+    COMMON = 1
+    RARE = 2
+    EPIC = 4
+    LEGENDARY = 8
+
+    @staticmethod
+    def read(_v: str) -> 'Rarity':
+        match _v:
+            case 'common':
+                return Rarity.COMMON
+            case 'rare':
+                return Rarity.RARE
+            case 'epic':
+                return Rarity.EPIC
+            case 'legendary':
+                return Rarity.LEGENDARY
+        return Rarity.NONE
 
 
 class Unit:
-    name = None
-    type = UnitType.NONE
-    images = []
-    order = -1
-    talents = []
-    max = False
+    key: str = None
+    rarity: Rarity = Rarity.NONE
+    name: str = None
+    name_jp: str = None
+    type: UnitType = UnitType.NONE
+    toxic: bool = False
+    images = None
 
-    def __init__(self):
-        # create all units
-        pass
+    def read_images(self):
+        globname = f"images/unit/*/*{self.key}*.png"
+        for _i in glob.glob(globname):
+            self.images.append(_i)
 
-    @staticmethod
-    def createAllUnits(u):
-        u.append(1)
-
-
-class TalentLeftRight(Enum):
-    CENTER = 0
-    LEFT = 1
-    RIGHT = 2
-
-
-class Talent:
-    name = ""
-    description = ""
-    level = ""
-    rightLeft = TalentLeftRight.LEFT
-
-
-Units = []
-Unit.createAllUnits(Units)
+    def __init__(self, _key: str, _d: dict):
+        self.images = list()
+        self.key = _key
+        for _k, _v in _d.items():
+            setattr(self, _k, _v)

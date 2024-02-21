@@ -9,8 +9,9 @@ from importlib import import_module
 from modules.counter import Counter
 from modules.gsheet import Worksheet, Spreadsheet
 from modules.utils import Utils as ut
-# from modules.rushroyale_stats import RushRoyaleStats
+from modules.rushroyale_stats import RushRoyaleStats
 
+import pdb
 
 def set_argument_parser():
     pass
@@ -21,24 +22,28 @@ def set_argument_parser():
 
 
 def get_format():
+    # for google spreadsheet
+    data = None
     with open('setting.yml', 'r') as _yml:
-        _d = yaml.safe_load(_yml)
-    return _d['format']
+        data = yaml.safe_load(_yml)['format']
+    return data
 
 
 def set_style():
+    # for rust royale
     with open('setting.yml', 'r') as _yml:
         _d = yaml.safe_load(_yml)
     _m = import_module('modules.styles')
-    _s = getattr(_m, _d['style']['target_module'])()
-    _s.import_from(_d['style'])
-    return _s
+    style = getattr(_m, _d['style']['target_module'])()
+    style.import_from(_d['style'])
+    return style
 
 
 def main():
     s, f = set_style(), get_format()
     # parser = set_argument_parser()
-    # rr = RushRoyaleStats(s, f)
+    # pdb.set_trace()
+    rr = RushRoyaleStats()
 
     print(f"Start to catalogue {s.style_type} deck")
 
@@ -135,6 +140,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict):
         raise e
     for t in ts:
         t.join()  # wait all thread finished
+
 
 
 if __name__ == "__main__":

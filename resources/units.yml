@@ -1,33 +1,408 @@
 unit:
-  - common:
-    - name: Archer
-      unit_type: Damage
-      jp_name: 射手
-    - name: Bombardier
-      unit_type: Debuff
-      jp_name: 爆撃手
-    - name: Cold Mage
-      unit_type: Debuff
-      jp_name: 極寒の魔法使い
-    - name: Fire Mage
-      unit_type: Damage
-      jp_name: 炎の魔法使い
-    - name: Hunter
-      unit_type: Damage
-      jp_name: ハンター
-    - name: Lightning Mage
-      unit_type: Damage
-      jp_name: 稲光の魔法使い
-    - name: Poisoner
-      unit_type: Debuff
-      jp_name: 毒殺者
-    - name: Rogue
-      unit_type: Damage
-      jp_name: ならず者
-    - name: Thrower
-      unit_type: Damage
-      jp_name: スロワー
-  - rare:
-    - name: Alchemist
-      unit_type: Damage
-      jp_name: アルケミスト
+# common
+  Archer:
+    rarity: common
+    name: Archer
+    type: Damage
+    name_jp: 射手
+  Bombardier:
+    rarity: common
+    name: Bombardier
+    type: Debuff
+    name_jp: 爆撃手
+  ColdMage:
+    rarity: common
+    name: Cold Mage
+    type: Debuff
+    name_jp: 極寒の魔法使い
+  FireMage:
+    rarity: common
+    name: Fire Mage
+    type: Damage
+    name_jp: 炎の魔法使い
+  Hunter:
+    rarity: common
+    name: Hunter
+    type: Damage
+    name_jp: ハンター
+  LightningMage:
+    rarity: common
+    name: Lightning Mage
+    type: Damage
+    name_jp: 稲光の魔法使い
+  Poisoner:
+    rarity: common
+    name: Poisoner
+    type: Debuff
+    name_jp: 毒殺者
+  Rogue:
+    rarity: common
+    name: Rogue
+    type: Damage
+    name_jp: ならず者
+  Thrower:
+    rarity: common
+    name: Thrower
+    type: Damage
+    name_jp: スロワー
+# rare
+  Alchemist:
+    rarity: rare
+    name: Alchemist
+    type: Damage
+    name_jp: アルケミスト
+  Banner:
+    rarity: rare
+    name: Banner
+    type: Support
+    name_jp: 旗
+  MagicCauldron:
+    rarity: rare
+    name: Magic Cauldron
+    type: Support
+    name_jp: 魔法の大鍋
+  Chemist:
+    rarity: rare
+    name: Chemist
+    type: Debugg
+    name_jp: 化学者
+  Grindstone:
+    rarity: rare
+    name: Grindstone
+    type: Support
+    name_jp: グラインダー
+  Priestess:
+    rarity: rare
+    name: Priestess
+    type: Support
+    name_jp: 巫女
+  Sentry:
+    rarity: rare
+    name: Sentry
+    type: Damage
+    name_jp: 見張り番
+  Sharpshooter:
+    rarity: rare
+    name: Sharpshooter
+    type: Damage
+    name_jp: 狙撃手
+  Zealot:
+    rarity: rare
+    name: Zealot
+    type: Damage
+    name_jp: 狂信者
+# epic
+  Catapult:
+    rarity: epic
+    name: Catapult
+    type: Support
+    name_jp: カタパルト
+  Clown:
+    rarity: epic
+    name: Clown
+    type: Special
+    name_jp: 道化師
+  Crystalmancer:
+    rarity: epic
+    name: Crystalmancer
+    type: Damage
+    name_jp: クリスタルマンサー
+  EarthElemental:
+    rarity: epic
+    name: Earth Elemental
+    type: Debuff
+    name_jp: 地属性
+  ColdElemental:
+    rarity: epic
+    name: Cold Elemental
+    type: Damage
+    name_jp: 低温の要素
+  Engineer:
+    rarity: epic
+    name: Engineer
+    type: Damage
+    name_jp: エンジニア
+  Gargoyle:
+    rarity: epic
+    name: Gargoyle
+    type: Damage
+    name_jp: ガーゴイル
+  Executioner:
+    rarity: epic
+    name: Executioner
+    type: Damage
+    name_jp: 死刑執行人
+  Mime:
+    rarity: epic
+    name: Mime
+    type: Special
+    name_jp: パントマイムアーティスト
+  PlagueDoctor:
+    rarity: epic
+    name: Plague Doctor
+    type: Debuff
+    name_jp: 疫病専門医
+  Ivy:
+    rarity: epic
+    name: Ivy
+    type: Debuff
+    name_jp: アイビー
+  PortalKeeper:
+    rarity: epic
+    name: Portal Keeper
+    type: Support
+    name_jp: 門番
+  Pyrotechnics:
+    rarity: epic
+    name: Pyrotechnics
+    type: Damage
+    name_jp: パイロテクニクス
+  Reaper:
+    rarity: epic
+    name: Reaper
+    type: Support
+    name_jp: 死神
+  PortalMage:
+    rarity: epic
+    name: Portal Mage
+    type: Debuff
+    name_jp: 門の魔法使い
+  Thunderer:
+    rarity: epic
+    name: Thunderer
+    type: Damage
+    name_jp: 雷神
+  Vampire:
+    rarity: epic
+    name: Vampire
+    type: Support
+    name_jp: 吸血鬼
+  WindArcher:
+    rarity: epic
+    name: wind Archer
+    type: Damage
+    name_jp: 風の射手
+# legendary
+  Banshee:
+    rarity: legendary
+    name: Banshee
+    type: Damage
+    name_jp: バンシー
+  Bruiser:
+    rarity: legendary
+    name: Bruiser
+    type: Damage
+    name_jp: ケンカ男
+  BladeDancer:
+    rarity: legendary
+    name: Blade Dancer
+    type: Damage
+    name_jp: ナイフの踊り子
+  Boreas:
+    rarity: legendary
+    name: Boreas
+    type: Damage
+    name_jp: ボリアス
+  Corsair:
+    rarity: legendary
+    name: Corsair
+    type: Damage
+    name_jp: 海賊船
+  Cultist:
+    rarity: legendary
+    name: Cultist
+    type: Damage
+    name_jp: 崇拝者
+  DemonHunter:
+    rarity: legendary
+    name: Demon Hunter
+    type: Damage
+    name_jp: 悪魔ハンター
+  Demonologist:
+    rarity: legendary
+    name: Demonologist
+    type: Special
+    name_jp: 悪魔学の権威
+  SpiritMaster:
+    rarity: legendary
+    name: Spirit Master
+    type: Damage
+    name_jp: 精霊マスター
+  Dryad:
+    rarity: legendary
+    name: Dryad
+    type: Support
+    name_jp: ドリュアス
+  Frost:
+    rarity: legendary
+    name: Frost
+    type: Debuff
+    name_jp: フロスト
+  Harleyquin:
+    rarity: legendary
+    name: Harleyquin
+    type: Special
+    name_jp: ハーレクイン
+  Inquisitor:
+    rarity: legendary
+    name: Inquisitor
+    type: Damage
+    name_jp: 調査官
+  Genie:
+    rarity: legendary
+    name: Genie
+    type: Damage
+    name_jp: ジーニー
+  Hex:
+    rarity: legendary
+    name: Hex
+    type: Support
+    name_jp: 魔力
+  KnightStatue:
+    rarity: legendary
+    name: Knight Statue
+    type: Support
+    name_jp: 騎士の像
+  ClockOfPower:
+    rarity: legendary
+    name: Clock of Power
+    type: Support
+    toxic: true
+    name_jp: パワーの時計
+  Meteor:
+    rarity: legendary
+    type: Damage
+    name: Meteor
+    name_jp: 隕石
+  Minotaur:
+    rarity: legendary
+    type: Damage
+    name: Minotaur
+    name_jp: ミノタウロス
+  Monk:
+    rarity: legendary
+    type: Damage
+    name: Monk
+    name_jp: 修道僧
+  EnchantedSword:
+    rarity: legendary
+    type: Special
+    name: Enchanted Sword
+    name_jp: 魅惑の剣
+  RidingHood:
+    rarity: legendary
+    type: Damage
+    name: Riding Hood
+    name_jp: 赤ずきん
+  Robot:
+    rarity: legendary
+    type: Damage
+    name: Robot
+    name_jp: ロボット
+  Scrapper:
+    rarity: legendary
+    type: Support
+    name: Scrapper
+    name_jp: スクレーパー
+  Stasis:
+    rarity: legendary
+    type: Debuff
+    name: Stasis
+    name_jp: 静止
+  Summoner:
+    rarity: legendary
+    type: Support
+    name: Summoner
+    name_jp: 召喚者
+  Tesla:
+    rarity: legendary
+    type: Damage
+    name: Tesla
+    name_jp: テスラ
+  Trapper:
+    rarity: legendary
+    type: Debuff
+    name: Trapper
+    name_jp: わな猟師
+  SeaDog:
+    rarity: legendary
+    type: Damage
+    name: Sea Dog
+    name_jp: 老船員
+  Witch:
+    rarity: legendary
+    type: Debuff
+    name: Witch
+    name_jp: 魔法使い
+  Shaman:
+    rarity: legendary
+    type: Special
+    name: Shaman
+    toxic: true
+    name_jp: シャーマン
+heroes:
+  Trainer:
+    rarity: common
+    name: Trainer
+    unlock:
+      arena: 1
+  Bestie:
+    rarity: common
+    name: Bestie
+    unlock:
+      arena: 2
+  Jay:
+    rarity: rare
+    name: Jay
+    unlock: 
+      arena: 1
+  Trickster:
+    rarity: rare
+    name: Trickster
+    unlock:
+      arena: 3
+  Elementalist:
+    rarity: rare
+    name: ELementalist
+    unlock:
+      arena: 6
+  Snowflake:
+    rarity: epic
+    name: Snowflake
+    unlock:
+      arena: 4
+  Gadget:
+    rarity: epic
+    name: Gadget
+    unlock:
+      arena: 7
+  Mari:
+    rarity: epic
+    name: Mari
+    unlock:
+      arena: 8
+  Mermaid:
+    rarity: epic
+    name: Marmaid
+    unlock:
+      arena: 9
+  Flicker:
+    rarity: epic
+    name: Flicker
+    unlock:
+      arena: 10
+  JakePaul:
+    rarity: epic
+    name: Jake Paul
+    unlock:
+      arena: x
+  Zeus:
+    rarity: legendary
+    name: Zeus
+    unlock:
+      arena: 4
+  Necromancer:
+    rarity: legendary
+    name: Necromancer
+    unlock:
+      arena: 5
