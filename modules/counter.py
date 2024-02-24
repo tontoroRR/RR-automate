@@ -99,10 +99,11 @@ class Counter:
             self.op.exist_click(self.style.card_tab, 1)
             pyautogui.moveTo(_pos)
         # if self.op.exists(self.style.cards):
-        _card = self.op.wait(self.style.cards, 2)
-        if _card is not None:
-            print(f"{_card} found")
-            self.op.drag_image_to(-1, self.card_y, _card)
+        # pdb.set_trace()
+        xy = self.op.wait(self.style.cards, 2)
+        if xy is not None:
+            print(f"card position = {xy}")
+            self.op.drag_image_to(-1, self.card_y, xy)
         else:
             print(f"{self.style.cards} NOT FOUND")
 
@@ -163,7 +164,7 @@ class Operation:
     LONG_WAIT = 10
     CONFIDENCE = 0.9
     DEBUG = False
-    TOOLOW = 650
+    TOOLOW = 600
     REGION = None
     first_line_pos = (-1, -1)
     line_height = 0
@@ -224,24 +225,25 @@ class Operation:
             raise pyautogui.useImageNotFoundException
 
     @overload
-    def wait(self, _img: str, _wait=LONG_WAIT) -> str:
+    def wait(self, _img: str, _wait=LONG_WAIT) -> (int, int):
         pass
 
     @overload
-    def wait(self, _img: list, _wait=LONG_WAIT) -> str:
+    def wait(self, _img: list, _wait=LONG_WAIT) -> (int, int):
         pass
 
-    def wait(self, _img, _wait=LONG_WAIT) -> str:
+    def wait(self, _img, _wait=LONG_WAIT) -> (int, int):
         _imgs = _img if isinstance(_img, list) else [_img]
-        xy, res, start = None, [], time.time()
+        xy, res = None, []
         for _img in _imgs:
+            start = time.time()
             is_timeout = False
             while xy is None and not is_timeout:
                 try:
                     xy = self.__los(_img)
                     print(xy)
                     if xy is not None:
-                        res = _img
+                        res = xy
                         break
                 except pyautogui.ImageNotFoundException:
                     pass
@@ -249,7 +251,7 @@ class Operation:
                     self.__dp("not found ", _img, " after ", _wait, "(s)")
                     is_timeout = True
                     
-        return res if xy is not None else None
+        return pyautogui.center(xy) if xy else None
 
     @overload
     def exists(self, _img: str, _wait: float = WAIT) -> bool:
@@ -297,9 +299,9 @@ class Operation:
                 es.append(e)
         raise Exception(es)
 
-    def drag_image_to(self, _x: int = -1, _y: int = -1, _img: str = ""):
+    def drag_image_to(self, _x: int = -1, _y: int = -1, _xy: (int, int) = None):
         start_pos = pyautogui.position()
-        xy = pyautogui.center(self.__los(_img))
+        xy = _xy
         if xy[1] <= self.TOOLOW:
             pass
         else:

@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 .tool-version
+experimental/
 
 # For my project only
 # --- from here
