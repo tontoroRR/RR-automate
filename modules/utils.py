@@ -40,5 +40,5 @@ class Utils:
         else:
             _img = pyautogui.screenshot(region=_region)
         dt = datetime.now().strftime('%Y%m%d_%H%M%S')
-        name = f"U:\\home\\phoi\\errors\\{dt}_#{str(_num).zfill(4)}.png"
+        name = f"U:\\home\\phoi\\errors\\{dt}_{str(_num).zfill(4)}.png"
         _img.save(name)
