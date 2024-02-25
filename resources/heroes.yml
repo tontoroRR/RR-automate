@@ -1,0 +1,79 @@
+hero:
+  Trainer:
+    rarity: common
+    name: Trainer
+    name_jp: トレーナー
+    unlock:
+      arena: 1
+  Bestie:
+    rarity: common
+    name: Bestie
+    name_jp: ベスティ
+    unlock:
+      arena: 2
+  Jay:
+    rarity: rare
+    name: Jay
+    name_jp: ジェイ
+    unlock: 
+      arena: 1
+  Trickster:
+    rarity: rare
+    name: Trickster
+    name_jp: 手品師
+    unlock:
+      arena: 3
+  Elementalist:
+    rarity: rare
+    name: ELementalist
+    name_jp: エレメンタリスト
+    unlock:
+      arena: 6
+  Snowflake:
+    rarity: epic
+    name: Snowflake
+    name_jp: スノーフレイク
+    unlock:
+      arena: 4
+  Gadget:
+    rarity: epic
+    name: Gadget
+    name_jp: ガジェット
+    unlock:
+      arena: 7
+  Mari:
+    rarity: epic
+    name: Mari
+    name_jp: マリ
+    unlock:
+      arena: 8
+  Mermaid:
+    rarity: epic
+    name: Marmaid
+    name_jp: 人魚
+    unlock:
+      arena: 9
+  Flicker:
+    rarity: epic
+    name: Flicker
+    name_jp: 炎の子
+    unlock:
+      arena: 10
+  JakePaul:
+    rarity: epic
+    name: Jake Paul
+    name_jp: ジェイク・ポール
+    unlock:
+      arena: x
+  Zeus:
+    rarity: legendary
+    name: Zeus
+    name_jp: ゼウス
+    unlock:
+      arena: 4
+  Necromancer:
+    rarity: legendary
+    name: Necromancer
+    name_jp: ネクロマンサー
+    unlock:
+      arena: 5
