@@ -19,6 +19,7 @@ class Counter:
     op = None
     card_y = 565
     _line_num = 0
+    cards_region = None
 
     def __init__(self, s: Style = None):
         self.op = Operation()
@@ -44,13 +45,6 @@ class Counter:
     def open_ranking(self):
         for btn in self.style.buttonSeq:
             self.op.exist_click(btn, 1)
-            """
-            if isinstance(btn, list):
-                res = self.op.find_any_thread(btn)
-                if res: self.op.exist_click(res.pop(), 1)
-            else:
-                self.op.exist_click(btn, 1)
-            """
 
         self.op.wait(self.style.badge1st, 5)
         x = pyautogui.position()[0]
@@ -59,9 +53,6 @@ class Counter:
         self.op.moveTo_first_line()
         if self.style.special_operation():
             print(self.style.special_operation())
-
-    def _get_region(self):
-        return self.style.app_region
 
     def _remove_duplicates(self, _units: list):
         _units = list(set(_units))
@@ -72,8 +63,9 @@ class Counter:
         hero = []
         units = []
         _style = self.style
-        _region = self.op.REGION
-        self.op.set_region(self._get_region())
+        _region = self.op.REGION  # save previou region
+        self.op.set_region(self.cards_region or self.style.app_region)
+        # self.op.set_region(self.style.app_region)
         hero = [
             _style.heros[k]
             for k in self.op.find_any_thread(list(_style.heros.keys()))
@@ -98,12 +90,13 @@ class Counter:
             _pos = pyautogui.position()
             self.op.exist_click(self.style.card_tab, 1)
             pyautogui.moveTo(_pos)
-        # if self.op.exists(self.style.cards):
-        # pdb.set_trace()
         xy = self.op.wait(self.style.cards, 2)
         if xy is not None:
             print(f"card position = {xy}")
             self.op.drag_image_to(-1, self.card_y, xy)
+            (_dx, _dy, _w, _h) = self.style.cards_region
+            self.cards_region = (xy[0] + _dx, xy[1] + _dy, _w, _h)
+            print(f"card region = {self.cards_region}")
         else:
             print(f"{self.style.cards} NOT FOUND")
 
@@ -234,7 +227,7 @@ class Operation:
 
     def wait(self, _img, _wait=LONG_WAIT) -> (int, int):
         _imgs = _img if isinstance(_img, list) else [_img]
-        xy, res = None, []
+        xy = None
         for _img in _imgs:
             start = time.time()
             is_timeout = False
@@ -243,14 +236,12 @@ class Operation:
                     xy = self.__los(_img)
                     print(xy)
                     if xy is not None:
-                        res = xy
                         break
                 except pyautogui.ImageNotFoundException:
                     pass
                 if (time.time() - start) > _wait:
                     self.__dp("not found ", _img, " after ", _wait, "(s)")
                     is_timeout = True
-                    
         return pyautogui.center(xy) if xy else None
 
     @overload
@@ -299,7 +290,10 @@ class Operation:
                 es.append(e)
         raise Exception(es)
 
-    def drag_image_to(self, _x: int = -1, _y: int = -1, _xy: (int, int) = None):
+    def drag_image_to(self,
+                      _x: int = -1,
+                      _y: int = -1,
+                      _xy: (int, int) = None):
         start_pos = pyautogui.position()
         xy = _xy
         if xy[1] <= self.TOOLOW:
@@ -333,7 +327,7 @@ class Operation:
         _imgs = _img if isinstance(_img, list) else [_img]
 
         def find_worker(_i: str, _d: list):
-            if self.__exists(_i, _wait):
+            if self.__exists(_i, _wait, self.REGION):
                 _d[_i] = 1
 
         ts, q = [], deque()

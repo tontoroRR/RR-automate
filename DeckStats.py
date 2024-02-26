@@ -13,6 +13,7 @@ from modules.rushroyale_stats import RushRoyaleStats
 
 import pdb
 
+
 def set_argument_parser():
     pass
     """
@@ -42,8 +43,8 @@ def set_style():
 def main():
     s, f = set_style(), get_format()
     # parser = set_argument_parser()
-    # pdb.set_trace()
-    rr = RushRoyaleStats()
+    # rr = RushRoyaleStats()
+    pdb.set_trace()
 
     print(f"Start to catalogue {s.style_type} deck")
 
@@ -140,7 +141,6 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict):
         raise e
     for t in ts:
         t.join()  # wait all thread finished
-
 
 
 if __name__ == "__main__":
