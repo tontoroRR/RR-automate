@@ -44,7 +44,7 @@ def main():
     s, f = set_style(), get_format()
     # parser = set_argument_parser()
     # rr = RushRoyaleStats()
-    pdb.set_trace()
+    # pdb.set_trace()
 
     print(f"Start to catalogue {s.style_type} deck")
 
@@ -74,10 +74,14 @@ def main():
         c.open_ranking()
         lap(chk)
         print(f"Phase3(Open RushRoyale app): {fmt_l(chk)} sec.")
-        log_decks_to_gsheet(c, ws, f)
+        error_count = log_decks_to_gsheet(c, ws, f)
         lap(chk)
         c.back_to_top()
         print(f"Phase4(Catalogue Decks): {fmt_l(chk)} sec.")
+        if 0 < error_count:
+            print(f"\033[33mError count: \033[41m{error_count}\033[0m")
+        else:
+            print("\033[36mNo error found\033[0m")
     except Exception as e:
         ut.log_exception()
         raise e
@@ -113,9 +117,10 @@ def fmt(et: float, st: float) -> str:
 
 
 def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict):
-    ts = []
-    _s = c.style
-    _ln = 0
+    error_count, ts, _s, _ln = 0, [], c.style, 0
+    # ts = []
+    # _s = c.style
+    # _ln = 0
     if not _s.dryrun:
         ws.update(f"{ws.start_column}2", _s.title_deck_table)
     try:
@@ -126,6 +131,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict):
                 continue
             _format = _f['normal']
             if len(_d[0]) != 1 or len(_d[1]) != 5:
+                error_count += 1
                 _deck[0], _format = f"!ERROR! - {_deck[0]}", _f['error']
             _deck += ["-"] if len(_d[0]) != 1 else _d[0]
             _deck += _d[1] + ["-"] * (5 - len(_d[1]))
@@ -140,7 +146,8 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict):
         ut.log_exception(_ln)
         raise e
     for t in ts:
-        t.join()  # wait all thread finished
+        t.join()
+    return error_count
 
 
 if __name__ == "__main__":
