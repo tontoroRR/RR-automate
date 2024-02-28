@@ -1,5 +1,6 @@
 from modules.utils import Utils
 
+
 class TestUtils:
     def test__can_convert_int_to_col(self):
         assert Utils.convert_int_to_col(1) == 'A'
@@ -12,6 +13,3 @@ class TestUtils:
         assert Utils.convert_col_to_int('Z') == 26
         assert Utils.convert_col_to_int('AA') == 27
         assert Utils.convert_col_to_int('ZZ') == 702
-
-def test_init():
-    assert 2 == 1
