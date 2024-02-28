@@ -9,7 +9,7 @@ from importlib import import_module
 from modules.counter import Counter
 from modules.gsheet import Worksheet, Spreadsheet
 from modules.utils import Utils as ut
-from modules.rushroyale_stats import RushRoyaleStats
+# from modules.rushroyale_stats import RushRoyaleStats
 
 import pdb
 
