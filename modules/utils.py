@@ -1,5 +1,5 @@
 import re
-# import pyautogui
+import pyautogui
 from datetime import datetime
 
 
