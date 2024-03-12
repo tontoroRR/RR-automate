@@ -51,19 +51,19 @@ def main():
     # pdb.set_trace()
 
     # connect to Google sheet, then open/create sheet
-    ws = None if s.dryrun else connect_sheet(s.style_type)
+    _now = datetime.datetime.now().strftime("%Y%m%d %H%M")
+    ws = None if s.dryrun else connect_sheet(s.style_type, _now)
     lap(chk)
 
     print(f"Phase1(connecting to Googlesheet): {fmt_l(chk)} sec.")
 
     if not s.dryrun:
-        _today = datetime.datetime.now().strftime("%Y%m%d")
-        ws.prepare_sheet(_today)
+        ws.prepare_sheet(_now)
         if not s.lines_only:
             ws.clear_region()
-        ws.update(ws.start_column+"1", [[_today, s.style_type]])
+        ws.update(ws.start_column+"1", [[_now, s.style_type]])
         lap(chk)
-        print(f"Phase2(prepare sheet as of {_today}): {fmt_l(chk)} sec.")
+        print(f"Phase2(prepare sheet as of {_now}): {fmt_l(chk)} sec.")
 
     # open App
     try:
@@ -92,10 +92,10 @@ def main():
     pass
 
 
-def connect_sheet(_sheet_type: str) -> Worksheet:
+def connect_sheet(_sheet_type: str, _now: str) -> Worksheet:
     print("connecting google sheet....")
     _ss = Spreadsheet()
-    _sheet_name = f"{datetime.datetime.now().strftime("%Y%m%d")}-{_sheet_type}"
+    _sheet_name = f"{_now}-{_sheet_type}"
     ws = _ss.get_sheet(_sheet_name) or _ss.create_sheet(_sheet_name)
     print("connected sheet and created '" + _sheet_name + "'!")
     return ws

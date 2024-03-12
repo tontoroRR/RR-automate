@@ -72,7 +72,7 @@ class TopTrophy(Style):
     lines_per_page = 7
     last_line_y = 810
     total_line = 1
-    adjust_scroll_up = 1.0925
+    adjust_scroll_up = 0.0925
 
     def __init__(self):
         self.buttonSeq.append(self.tab)
@@ -103,7 +103,7 @@ class MaxCrit(Style):
     lines_per_page = 8
     last_line_y = 860
     total_line = 1
-    adjust_scroll_up = 1.11
+    adjust_scroll_up = 0.11
 
     def __init__(self):
         self.buttonSeq.append(self.tab)
@@ -118,7 +118,7 @@ class RhandumLeague(Style):
     lines_per_page = 5
     last_line_y = 480
     total_line = 1
-    adjust_scroll_up = 1.08
+    adjust_scroll_up = 0.08
     do_scroll_not_found = True
 
     card_tab = "images/rhandumLeagueTab.png"

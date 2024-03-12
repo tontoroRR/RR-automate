@@ -22,26 +22,22 @@ class Counter:
     _line_num = 0
     cards_region = None
 
-    def __init__(self, s: Style = None):
+    def __init__(self, _s: Style = None):
         self.op = Operation()
-        if s:
-            self.set_style(s)
-            self.op.line_height = s.line_height
-            self.op.adjust_scroll_up = s.adjust_scroll_up
-            self.op.DEBUG = s.DEBUG
+        if _s:
+            self.set_style(_s)
+            self.op.set_style(_s)
 
     def focus_app(self, _region=None, _app_name: set = None):
         (left, top, width, height) = _region or self.style.app_region
         h = windll.user32.FindWindowW(0, _app_name or self.style.app_name)
         windll.user32.MoveWindow(h, left, top, width, height)
-        time.sleep(0.2)
+        self.op.sleep(0.2)
         windll.user32.SetForegroundWindow(h)
-        time.sleep(0.2)
+        self.op.sleep(0.2)
 
     def set_style(self, _style):
         self.style = _style
-        self.op.set_region(self.style.app_region)
-        self.op.set_wait(self.style.wait)
 
     def open_ranking(self):
         for btn in self.style.buttonSeq:
@@ -121,7 +117,7 @@ class Counter:
                 yield ((["hero"], ["unit", "unit", "unit", "unit", "unit"]))
             else:
                 self._open_profile()
-                time.sleep(0.5)
+                self.op.sleep(0.5)
                 _save_xy = pyautogui.position()
                 pyautogui.moveTo((_save_xy[0], 0))
                 yield (self._get_user_deck())
@@ -145,7 +141,7 @@ class Counter:
                         self.style.lines_per_page - ls_remained + 1
                     )
             if self._line_num == self.style.total_line:
-                time.sleep(self.style.sleep_at_end)
+                self.op.sleep(self.style.sleep_at_end)
 
     def back_to_top(self):
         while not (self.op.exists(self.style.btn_battle)):
@@ -153,6 +149,7 @@ class Counter:
 
 
 class Operation:
+    WTA = 1  # wait_time_adjust
     WAIT = 0.1
     LONG_WAIT = 10
     CONFIDENCE = 0.9
@@ -170,6 +167,9 @@ class Operation:
     def __dp(self, *values: object):
         if self.DEBUG:
             print(values)
+
+    def sleep(self, _count: int, _wta: int = WTA):
+        time.sleep(_count * _wta)
 
     @overload
     def __los(self, _img: list, _region=REGION):
@@ -197,6 +197,7 @@ class Operation:
             raise pyautogui.ImageNotFoundException(_imgs, _img)
 
     def __exists(self, _img: str, _wait=WAIT, _region=REGION) -> bool:
+        _wait = _wait * self.WTA
         self.__dp(_wait)
         for _i in range(int(_wait * 10)):
             try:
@@ -226,6 +227,7 @@ class Operation:
         pass
 
     def wait(self, _img, _wait=LONG_WAIT) -> ((int, int), str):
+        _wait = _wait * self.WTA
         _imgs = _img if isinstance(_img, list) else [_img]
         xy = None
         for _img in _imgs:
@@ -300,19 +302,19 @@ class Operation:
             _x = _xy[0] if (_x == -1) else _x
             _y = _xy[1] if (_y == -1) else _y
             pyautogui.mouseDown(_xy)
-            pyautogui.moveTo(_x, _y, 0.3)
-            time.sleep(0.3)
+            pyautogui.moveTo(_x, _y, 0.3 * self.WTA)
+            self.sleep(0.3)
             pyautogui.mouseUp()
             res = pyautogui.position()
             pyautogui.moveTo(start_pos)
             return res
 
     def scrollup_slow(self, lines: int):
-        dy = -1 * int(self.line_height * lines * self.adjust_scroll_up)
+        dy = -1 * int(self.line_height * lines * (1 + self.adjust_scroll_up / (self.WTA * 0.4)))
         pyautogui.mouseDown()
-        time.sleep(0.2)
-        pyautogui.move(0, dy, 0.6)  # , pyautogui.easeInQuad)
-        time.sleep(0.35)
+        self.sleep(0.2)
+        pyautogui.move(0, dy, 0.6 * self.WTA)  # , pyautogui.easeInQuad)
+        self.sleep(0.35)
         pyautogui.mouseUp()
 
     @overload
@@ -376,5 +378,10 @@ class Operation:
     def set_region(self, _region):
         self.REGION = _region
 
-    def set_wait(self, _wait):
-        self.WAIT = _wait
+    def set_style(self, _style):
+        self.WAIT = _style.wait
+        self.WTA = _style.wait_time_adjust
+        self.DEBUG = _style.DEBUG
+        self.line_height = _style.line_height
+        self.adjust_scroll_up = _style.adjust_scroll_up
+        self.set_region(_style.app_region)
