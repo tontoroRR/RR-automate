@@ -1,6 +1,5 @@
 import re
 import pyautogui
-
 from datetime import datetime
 
 
@@ -20,13 +19,6 @@ class Utils:
         for _l in lcols:
             col = col * 26 + ord(_l) - 64
         return col
-
-    """
-    @staticmethod
-    def convert(ary: list):
-        _l = list(map(UnitConverter.convert_img_to_name, ary))
-        return list(set(_l))
-    """
 
     @staticmethod
     def log_exception(_num: int = 0):

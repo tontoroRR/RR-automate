@@ -1,5 +1,6 @@
 style:
   target_module: TopTrophy # TopTrophy / MaxCrit / RhandumLeague / PastSeasonLeader
+  target_deck: PvP # PvP / Coop / Tournament / RhandumLuague
   total_line: 100
   lines_only: []
   dryrun: false

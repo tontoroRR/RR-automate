@@ -1,6 +1,7 @@
 import time
 import pyautogui
-import ctypes
+from ctypes import windll
+
 from typing import overload
 
 import threading
@@ -29,12 +30,12 @@ class Counter:
             self.op.adjust_scroll_up = s.adjust_scroll_up
             self.op.DEBUG = s.DEBUG
 
-    def focus_app(self):
-        (left, top, width, height) = self.style.app_region
-        h = ctypes.windll.user32.FindWindowW(0, self.style.app_name)
-        ctypes.windll.user32.MoveWindow(h, left, top, width, height)
+    def focus_app(self, _region=None, _app_name: set = None):
+        (left, top, width, height) = _region or self.style.app_region
+        h = windll.user32.FindWindowW(0, _app_name or self.style.app_name)
+        windll.user32.MoveWindow(h, left, top, width, height)
         time.sleep(0.2)
-        ctypes.windll.user32.SetForegroundWindow(h)
+        windll.user32.SetForegroundWindow(h)
         time.sleep(0.2)
 
     def set_style(self, _style):

@@ -1,10 +1,8 @@
 import time
 import datetime
-# import easygui
 import threading
 import yaml
 from importlib import import_module
-# import argparse
 
 from modules.counter import Counter
 from modules.gsheet import Worksheet, Spreadsheet
@@ -64,8 +62,8 @@ def main():
         if not s.lines_only:
             ws.clear_region()
         ws.update(ws.start_column+"1", [[_today, s.style_type]])
+        lap(chk)
         print(f"Phase2(prepare sheet as of {_today}): {fmt_l(chk)} sec.")
-    lap(chk)
 
     # open App
     try:

@@ -12,15 +12,15 @@ import pdb
 class Spreadsheet:
     sheet = None
 
-    def __init__(self):
+    def __init__(self, _env: str = '.env'):
         load_dotenv(verbose=True)
-        load_dotenv(".env")
+        load_dotenv('.env')
 
-        jsonf = os.environ.get("jsonfile")
-        sheetKey = os.environ.get("leaderboards_secret_key")
+        jsonf = os.environ.get('jsonfile')
+        sheetKey = os.environ.get('leaderboards_secret_key')
         scope = [
-            "https://spreadsheets.google.com/feeds",
-            "https://www.googleapis.com/auth/drive",
+            'https://spreadsheets.google.com/feeds',
+            'https://www.googleapis.com/auth/drive',
         ]
         credentials = sac.from_json_keyfile_name(jsonf, scope)
         gc = gspread.authorize(credentials)
@@ -45,9 +45,9 @@ class Worksheet:
     start_column = -1
     end_column = -1
     columns = 10
-    region = ""
-    default_format = {"backgroundColor":
-                      {"red": 1.0, "green": 1.0, "blue": 1.0}}
+    region = ''
+    default_format = {'backgroundColor':
+                      {'red': 1.0, 'green': 1.0, 'blue': 1.0}}
 
     def __init__(self, ws):
         self.ws = ws
@@ -67,7 +67,7 @@ class Worksheet:
 
     def prepare_sheet(self, dt=None):
         if not dt:
-            dt = datetime.datetime.now().strftime("%Y%m%d")
+            dt = datetime.datetime.now().strftime('%Y%m%d')
         cellSameDay = self.find_cell(dt)
         if cellSameDay:
             col = cellSameDay.col
@@ -81,14 +81,14 @@ class Worksheet:
                 (day - 1) * self.columns + 1 + self.columns
             )
         self.region = (
-            self.start_column + "1:" + self.end_column + str(self.ws.row_count)
+            self.start_column + '1:' + self.end_column + str(self.ws.row_count)
         )
 
     def clear_region(self):
         self.clear([self.region])
 
     def is_empty_cell(self, cell):
-        if cell.value == "None":
+        if cell.value == 'None':
             return True
         else:
             return False
@@ -99,6 +99,6 @@ class Worksheet:
             cell = self.ws.cell(1, i + 1)
             print(self.convert_int_to_col(i))
             if not self.is_empty_cell(cell):
-                print("not empty cell", cell)
+                print(f'not empty cell {cell}')
                 return i + self.columns
         return 1

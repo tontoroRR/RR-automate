@@ -1,7 +1,6 @@
 # stats information of Rush Royale, say Units, Heroes, User Info, Event
 import yaml
 import glob
-import pdb
 
 
 class RushRoyaleStats:
@@ -17,13 +16,13 @@ class RushRoyaleStats:
         self.read_images()
 
     def create_units(self):
-        with open('resources/units.yml', 'r') as _f:
+        with open('resources/units.yml', 'r', encoding='utf-8') as _f:
             _us = yaml.safe_load(_f)
             for _k, _d in _us['unit'].items():
                 self.units[_k] = Unit(_k, _d)
 
     def create_heroes(self):
-        with open('resources/heroes.yml', 'r') as _f:
+        with open('resources/heroes.yml', 'r', encoding='utf-8') as _f:
             _us = yaml.safe_load(_f)
             for _k, _d in _us['hero'].items():
                 self.heroes[_k] = Hero(_k, _d)
@@ -55,7 +54,8 @@ class CardBase:
         self.images = list()
         globname = f"{self.image_path}/**/*{self.key}*.png"
         for _i in glob.glob(globname):
-            self.images.append(_i)
+            self.images.append(_i.replace('/', '\\'))
+        sorted(self.images)
 
 
 class Unit(CardBase):
