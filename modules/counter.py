@@ -9,6 +9,7 @@ from collections import deque
 
 from modules.styles import Style
 from modules.utils import Utils as ut
+from modules.rushroyale_stats import CardBase
 
 import pdb
 
@@ -55,17 +56,35 @@ class Counter:
         _maxed = [_u.replace("(Max)", "") for _u in _units if "Max" in _u]
         return [_u for _u in _units if _u not in _maxed]
 
+    def _set_card(self, _card: CardBase, _imgs: str) -> CardBase:
+        return _card.create_my_card(_imgs)
+        """
+        match type(_card):
+            case RushRoyaleStats.Hero:
+                myhero = MyHero()
+                pass
+            case RushRoyaleStats.Unit:
+                pass
+            case _:
+                pass
+        """
+
     def _find_cards(self, _dict: dict, _count: int) -> list:
+        _images = sum([_d.images for _d in _dict.values()], [])
         _cards, _retry, _save_confidence = [], 0, self.op.CONFIDENCE
         for _retry in range(3):
-            _cards = self._unique([
-                _dict[k]
-                for k in self.op.find_any_thread(list(_dict.keys()))
-            ])
+            _founds = self.op.find_any_thread(_images)
+            _cards = [
+                self._set_card(_c, list(set(_c.images) & set(_founds)))
+                for _c in _dict.values()
+                if list(set(_c.images) & set(_founds))
+                # if any([(_i in _c.images) for _i in _founds])
+            ]
             if len(_cards) == _count:
                 break
             else:
                 print(f"\033[33mMissing some: \033[41m{_cards}\033[0m")
+                # TODO)) : 見つかったcardは_imagesから省く
             self.op.CONFIDENCE -= 0.1
         if 0 < _retry:
             print(f"\033[33mError count: \033[41m{_retry}\033[0m")
@@ -75,7 +94,7 @@ class Counter:
     def _get_user_deck(self):
         _save_region = self.op.REGION
         self.op.set_region(self.cards_region or self.style.app_region)
-        hero = self._find_cards(self.style.heros, 1)
+        hero = self._find_cards(self.style.heroes, 1)
         units = self._find_cards(self.style.units, 5)
         self.op.set_region(_save_region)
         if len(hero) != 1 or len(units) != 5:
@@ -96,6 +115,15 @@ class Counter:
         else:
             print(f"{self.style.cards} NOT FOUND")
 
+    def _is_target_line(self, _n: int) -> bool:
+        if all([
+            len(self.style.lines_only),
+            (_n not in self.style.lines_only),
+        ]):
+            return True
+        else:
+            return False
+
     def count(self):
         cur_l = 1
         plus_ls = 0
@@ -106,12 +134,7 @@ class Counter:
                 cur_l = self.style.lines_per_page
             cur_l = cur_l + plus_ls
             # 1. get deck
-            if all(
-                [
-                    len(self.style.lines_only),
-                    (self._line_num not in self.style.lines_only),
-                ]
-            ):
+            if self._is_target_line(self._line_num):
                 yield ([])
             elif self.style.dryrun:
                 yield ((["hero"], ["unit", "unit", "unit", "unit", "unit"]))
@@ -310,7 +333,9 @@ class Operation:
             return res
 
     def scrollup_slow(self, lines: int):
-        dy = -1 * int(self.line_height * lines * (1 + self.adjust_scroll_up / (self.WTA * 0.4)))
+        _d = 1 if self.WTA == 1 else (self.WTA * 0.4)
+        _adj = 1 + (self.adjust_scroll_up / _d)
+        dy = -1 * int(self.line_height * lines * _adj)
         pyautogui.mouseDown()
         self.sleep(0.2)
         pyautogui.move(0, dy, 0.6 * self.WTA)  # , pyautogui.easeInQuad)

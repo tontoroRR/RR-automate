@@ -1,13 +1,12 @@
 import time
 import datetime
-import threading
 import yaml
 from importlib import import_module
 
 from modules.counter import Counter
 from modules.gsheet import Worksheet, Spreadsheet
 from modules.utils import Utils as ut
-# from modules.rushroyale_stats import RushRoyaleStats
+from modules.rushroyale_stats import RushRoyaleStats
 
 import pdb
 
@@ -28,30 +27,31 @@ def get_format():
     return data
 
 
-def set_style():
+def set_style(_rr: RushRoyaleStats = None):
     # for rust royale
     with open('setting.yml', 'r') as _yml:
         _d = yaml.safe_load(_yml)
     _m = import_module('modules.styles')
     style = getattr(_m, _d['style']['target_module'])()
     style.import_from(_d['style'])
+    style.units, style.heroes = _rr.units, _rr.heroes
     return style
 
 
 def main():
-    s, f = set_style(), get_format()
+    rr = RushRoyaleStats()
+    rr.setup()
+    s, f = set_style(rr), get_format()
     # parser = set_argument_parser()
-    # rr = RushRoyaleStats()
-    # pdb.set_trace()
 
     print(f"Start to catalogue {s.style_type} deck")
 
     # set timer
     chk = lap()
-    # pdb.set_trace()
-
     # connect to Google sheet, then open/create sheet
     _now = datetime.datetime.now().strftime("%Y%m%d %H%M")
+    if not s.use_sec:
+        _now = datetime.datetime.now().strftime("%Y%m%d")
     ws = None if s.dryrun else connect_sheet(s.style_type, _now)
     lap(chk)
 
@@ -72,7 +72,7 @@ def main():
         c.open_ranking()
         lap(chk)
         print(f"Phase3(Open RushRoyale app): {fmt_l(chk)} sec.")
-        error_count = log_decks_to_gsheet(c, ws, f)
+        (error_count, all_decks) = log_decks_to_gsheet(c, ws, f)
         lap(chk)
         c.back_to_top()
         print(f"Phase4(Catalogue Decks): {fmt_l(chk)} sec.")
@@ -114,38 +114,33 @@ def fmt(et: float, st: float) -> str:
     return str(round(et - st, 3))
 
 
-def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict):
-    error_count, ts, _s, _ln = 0, [], c.style, 0
-    # ts = []
-    # _s = c.style
-    # _ln = 0
+def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict) -> (int, list):
+    error_count, _s, _ln = 0, c.style, 0
+    _all_for_gsheet, all_deck = [], []
     if not _s.dryrun:
         ws.update(f"{ws.start_column}2", _s.title_deck_table)
     try:
         for _i, _d in enumerate(c.count()):
+            pdb.set_trace()
             _ln = _i + 1
             _deck = [_ln]
+            all_deck.append([_ln, _deck[0], _deck[1]])
             if _s.lines_only and (_ln not in _s.lines_only):
                 continue
-            _format = _f['normal']
+            _format = _f['normal']  # _formatを使いたい
             if len(_d[0]) != 1 or len(_d[1]) != 5:
                 error_count += 1
                 _deck[0], _format = f"!ERROR! - {_deck[0]}", _f['error']
-            _deck += ["-"] if len(_d[0]) != 1 else _d[0]
-            _deck += _d[1] + ["-"] * (5 - len(_d[1]))
+            _deck += [str(_e) for _e in (["-"] if len(_d[0]) != 1 else _d[0])]
+            _deck += [str(_e) for _e in _d[1] + ["-"] * (5 - len(_d[1]))]
             print(_deck)
-            if not _s.dryrun:
-                _t = threading.Thread(
-                    target=ws.update,
-                    args=(ws.start_column + str(_ln+2), [_deck], _format,))
-                _t.start()
-                ts.append(_t)
+            _all_for_gsheet.append(_deck)
+        if not _s.dryrun:
+            ws.update(ws.start_column + '3', _all_for_gsheet)
     except Exception as e:
         ut.log_exception(_ln)
         raise e
-    for t in ts:
-        t.join()
-    return error_count
+    return (error_count, all_deck)
 
 
 if __name__ == "__main__":

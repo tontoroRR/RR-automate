@@ -1,6 +1,4 @@
-import glob
 import re
-
 import pdb
 
 
@@ -42,17 +40,3 @@ class Converter:
         for _reg, _str in Converter.__CONVERTS.items():
             name = re.sub(_reg, _str, name)
         return name
-
-
-class HeroImage(Converter):
-    all = {}
-    for _d in glob.glob("images/hero/*/*"):
-        _d = _d.replace("\\", "/")
-        all[_d] = Converter.convert_img_to_name(_d)
-
-
-class UnitImage(Converter):
-    all = {}
-    for _d in glob.glob("images/unit/*/*"):
-        _d = _d.replace("\\", "/")
-        all[_d] = Converter.convert_img_to_name(_d)

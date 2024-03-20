@@ -8,7 +8,7 @@ style:
   lines_range: 
     min: 0
     max: 0
-  # adjust_scroll_up: 1.08
+  use_sec: false
 
 format:
   normal:

@@ -1,6 +1,11 @@
 # stats information of Rush Royale, say Units, Heroes, User Info, Event
 import yaml
 import glob
+from copy import deepcopy
+
+
+rarity = {"legendary": 1, "epic": 2, "rare": 3, "common": 4}
+type = {"Damage": 1, "Support": 2, "Debuff": 3, "Special": 4}
 
 
 class RushRoyaleStats:
@@ -44,11 +49,22 @@ class CardBase:
     image_path: str = None
 
     def __init__(self, _key: str, _dict: dict):
-        self.images = list()
-        self.key = _key
+        self.images, self.key = list(), _key
         for _k, _v in _dict.items():
             setattr(self, _k, _v)
         self.key_max = f"{self.key}(Max)"
+
+    def __lt__(self, other) -> bool:
+        if self.rating() == other.rating():
+            return self.name < other.name
+        else:
+            return self.rating() < other.rating()
+
+    def __gt__(self, other) -> bool:
+        return not self.__lt__(self, other)
+
+    def __str__(self) -> str:
+        return self.name
 
     def read_images(self):
         self.images = list()
@@ -57,27 +73,49 @@ class CardBase:
             self.images.append(_i.replace('/', '\\'))
         sorted(self.images)
 
+    def rating(self) -> int:
+        return 0
+
+    def create_my_card(self, _imgs: list) -> 'CardBase':
+        return deepcopy(self)
+
 
 class Unit(CardBase):
     type: str = None
     toxic: bool = False
     image_path: str = "images/unit"
+    mana_max: int = 5
 
-    def __init__(self, _key: str, _dict: dict):
-        super().__init__(_key, _dict)
+    def rating(self) -> int:
+        # 1. Legendary * Damage -> Mana(Rariry -> Type) -> NoMana(R -> T)
+        # 2. Type : Damage -> Support -> Debuff -> Special
+        # 3. No Mana Legies : Scrapper, Summoner
+        _rate = 20000
+        if all([self.rarity == 'legendary', self.type == 'Damage']):
+            _rate = 10000
+        elif 2 < self.mana_max:
+            _rate += rarity[self.rarity] * 10
+            _rate += type[self.type]
+        else:
+            _rate += rarity[self.rarity] * 1000
+            _rate += type[self.type] * 10
+        return _rate
 
-    def read_images(self):
-        super().read_images()
+    def create_my_card(self, _imgs: list) -> 'Unit':
+        c = super().create_my_card(_imgs)
+        return c
 
 
 class Hero(CardBase):
     image_path: str = "images/hero"
 
-    def __init__(self, _key: str, _dict: dict):
-        super().__init__(_key, _dict)
+    def rating(self) -> int:
+        # 1. By rarity
+        return rarity[self.rarity]
 
-    def read_images(self):
-        super().read_images()
+    def create_my_card(self, _imgs: list) -> 'Hero':
+        c = super().create_my_card(_imgs)
+        return c
 
 
 class MyUnit(Unit):
