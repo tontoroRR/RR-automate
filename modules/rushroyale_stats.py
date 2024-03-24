@@ -1,7 +1,6 @@
 # stats information of Rush Royale, say Units, Heroes, User Info, Event
 import yaml
 import glob
-from copy import deepcopy
 
 
 rarity = {"legendary": 1, "epic": 2, "rare": 3, "common": 4}
@@ -64,7 +63,7 @@ class CardBase:
         return not self.__lt__(self, other)
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name}"
 
     def read_images(self):
         self.images = list()
@@ -77,7 +76,7 @@ class CardBase:
         return 0
 
     def create_my_card(self, _imgs: list) -> 'CardBase':
-        return deepcopy(self)
+        pass
 
 
 class Unit(CardBase):
@@ -102,8 +101,9 @@ class Unit(CardBase):
         return _rate
 
     def create_my_card(self, _imgs: list) -> 'Unit':
-        c = super().create_my_card(_imgs)
-        return c
+        _m = MyUnit()
+        _m.create_from(self, _imgs)
+        return _m
 
 
 class Hero(CardBase):
@@ -114,8 +114,9 @@ class Hero(CardBase):
         return rarity[self.rarity]
 
     def create_my_card(self, _imgs: list) -> 'Hero':
-        c = super().create_my_card(_imgs)
-        return c
+        _m = MyHero()
+        _m.create_from(self, _imgs)
+        return _m
 
 
 class MyUnit(Unit):
@@ -123,7 +124,37 @@ class MyUnit(Unit):
     pos = None
 
     def __init__(self):
+        self.__name = ''
+        self.__name_jp = ''
         pass
+
+    @property
+    def name(self):
+        if self.level == 15:
+            return f"{self.__name}(Max)"
+        else:
+            return self.__name
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+
+    @property
+    def name_jp(self):
+        if self.level == 15:
+            return f"{self.__name_jp}(Max)"
+        else:
+            return self.__name_jp
+
+    @name_jp.setter
+    def name_jp(self, name_jp):
+        self.__name_jp = name_jp
+
+    def create_from(self, _c: CardBase, _imgs: list) -> 'MyUnit':
+        for _k, _v in vars(_c).items():
+            setattr(self, _k, _v)
+        if [_i for _i in _imgs if ("Max" in _i) & (_i in self.images)]:
+            self.level = 15
 
 
 class MyHero(Hero):
@@ -131,6 +162,19 @@ class MyHero(Hero):
 
     def __init__(self):
         pass
+
+    def name(self):
+        if self.level == 20:
+            return f"{self.name}(Max)"
+        else:
+            return self.name
+
+    def name_jp(self):
+        pass
+
+    def create_from(self, _c: CardBase, _imgs: list) -> 'MyHero':
+        for _k, _v in vars(_c).items():
+            setattr(self, _k, _v)
 
 
 class Deck:

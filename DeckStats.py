@@ -121,7 +121,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict) -> (int, list):
         ws.update(f"{ws.start_column}2", _s.title_deck_table)
     try:
         for _i, _d in enumerate(c.count()):
-            pdb.set_trace()
+            # pdb.set_trace()
             _ln = _i + 1
             _deck = [_ln]
             all_deck.append([_ln, _deck[0], _deck[1]])

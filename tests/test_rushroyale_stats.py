@@ -24,8 +24,8 @@ class TestHero:
     def test__rating(self):
         gadget = Hero('Gadget', {'key': 'Gadget', 'rarity': 'epic'})
         zeus = Hero('Zeus', {'key': 'Zeus', 'rarity': 'legendary'})
-        assert gadget.rating() == 3
-        assert zeus.rating() == 4
+        assert gadget.rating() == 2
+        assert zeus.rating() == 1
 
     def test_sorted(self):
         gadget = Hero('Gadget', {'key': 'Gadget', 'rarity': 'epic'})
@@ -33,6 +33,10 @@ class TestHero:
         heroes = [gadget, zeus]
         h = sorted(heroes)
         assert h[0] == zeus
+
+    def test__create_my_card(self):
+        gadget = Hero('Gadget', {'key': 'Gadget', 'rarity': 'epic'})
+        gadget.read_images()
 
 
 class TestUnit:
@@ -68,12 +72,12 @@ class TestUnit:
                'rarity': 'legendary', 'type': 'Damage',
                'toxic': False}
         monk = Unit('Monk', _d3)
-        assert rogue.rating() == 11400
-        assert shaman.rating() == 14100
-        assert monk.rating() == 20000
+        assert rogue.rating() == 20041
+        assert shaman.rating() == 20014
+        assert monk.rating() == 10000
 
     def test_sorted(self):
-        _d1 = {'key': 'KnightStatue', 'name': 'KnightStatue',
+        _d1 = {'key': 'KnightStatue', 'name': 'Knight Statue',
                'rarity': 'legendary', 'type': 'Support'}
         ks = Unit('KnightStatue', _d1)
         _d2 = {'key': 'Chemist', 'name': 'Chemist',
@@ -86,20 +90,55 @@ class TestUnit:
                'rarity': 'legendary', 'type': 'Support',
                'mana_max': 2}
         scr = Unit('Harleyquin', _d4)
-        _d5 = {'key': 'SpiritMaster', 'name': 'SpiritMaster',
+        _d5 = {'key': 'SpiritMaster', 'name': 'Spirit Master',
                'rarity': 'legendary', 'type': 'Damage',
                'mana_max': 11}
         sm = Unit('SpiritMaster', _d5)
 
         units = [chem, ks, hq, scr, sm]
         u = sorted(units)
-        
+
         assert u[0] == sm
         assert u[1] == ks
         assert u[2] == hq
         assert u[3] == chem
         assert u[4] == scr
         assert u == [sm, ks, hq, chem, scr]
+
+
+class TestMyHero:
+    def test__init__(self):
+        _d = {'key': 'KnightStatue', 'name': 'Knight Statue',
+              'name_jp': '騎士像', 'rarity': 'legendary', 'type': 'Support'}
+        ks = Unit('KnightStatue', _d)
+        ks.read_images()
+        _imgs = [
+                    r"images\unit\legendary\KnightStatue.png",
+                    r"images\unit\legendary\KnightStatueMax.png",
+                    r"images\unit\legendary\SpiritMasterMax.png",
+                ]
+        my_ks = ks.create_my_card(_imgs)
+        assert my_ks.name == "Knight Statue(Max)"
+        assert str(my_ks) == "Knight Statue(Max)"
+        assert my_ks.name_jp == "騎士像(Max)"
+        assert my_ks.level == 15
+
+
+class TestMyUnit:
+    def test__init__(self):
+        gadget = Hero('Gadget',
+                      {'key': 'Gadget', 'name': 'Gadget',
+                       'name_jp': 'ガジェット', 'rarity': 'epic'})
+        gadget.read_images()
+        _imgs = [
+                    r"images\hero\epic\Gadget.png",
+                ]
+        my_hero = gadget.create_my_card(_imgs)
+        assert my_hero.name == "Gadget"
+        assert str(my_hero) == "Gadget"
+        assert my_hero.name_jp == "ガジェット"
+        assert my_hero.level is None
+    pass
 
 
 class TestRushRoyaleStats:
