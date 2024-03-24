@@ -64,7 +64,7 @@ unit:
   Chemist:
     rarity: rare
     name: Chemist
-    type: Debugg
+    type: Debuff
     name_jp: 化学者
   Grindstone:
     rarity: rare
@@ -188,6 +188,7 @@ unit:
     name: Banshee
     type: Damage
     name_jp: バンシー
+    mana_max: 2
   Bruiser:
     rarity: legendary
     name: Bruiser
@@ -208,11 +209,13 @@ unit:
     name: Corsair
     type: Damage
     name_jp: 海賊船
+    mana_max: 2
   Cultist:
     rarity: legendary
     name: Cultist
     type: Damage
     name_jp: 崇拝者
+    mana_max: 2
   DemonHunter:
     rarity: legendary
     name: Demon Hunter
@@ -228,6 +231,7 @@ unit:
     name: Spirit Master
     type: Damage
     name_jp: 精霊マスター
+    mana_max: 11
   Dryad:
     rarity: legendary
     name: Dryad
@@ -253,6 +257,7 @@ unit:
     name: Genie
     type: Damage
     name_jp: ジーニー
+    mana_max: 2
   Hex:
     rarity: legendary
     name: Hex
@@ -284,6 +289,7 @@ unit:
     type: Damage
     name: Monk
     name_jp: 修道僧
+    mana_max: 2
   EnchantedSword:
     rarity: legendary
     type: Special
@@ -304,6 +310,7 @@ unit:
     type: Support
     name: Scrapper
     name_jp: スクレーパー
+    mana_max: 2
   Stasis:
     rarity: legendary
     type: Debuff
@@ -314,6 +321,7 @@ unit:
     type: Support
     name: Summoner
     name_jp: 召喚者
+    mana_max: 2
   Tesla:
     rarity: legendary
     type: Damage
@@ -329,6 +337,7 @@ unit:
     type: Damage
     name: Sea Dog
     name_jp: 老船員
+    mana_max: 2
   Witch:
     rarity: legendary
     type: Debuff

@@ -10,3 +10,6 @@ flake8
 black
 pytest
 pytest-watch
+Pillow
+transitions
+playsound==1.2.2

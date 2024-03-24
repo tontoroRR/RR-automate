@@ -1,6 +1,5 @@
-from modules.images import BtnImage, LabelImage, HeroImage, UnitImage
-
-import pdb
+# import pdb
+from modules.images import BtnImage, LabelImage
 
 
 class Style:
@@ -14,9 +13,9 @@ class Style:
 
     wait = 1
     pause = 0.2
-    heros = HeroImage.all
-    units = UnitImage.all
-    dryrun = False
+    heroes = None
+    units = None
+
 
     buttonSeq = [menus, btn_leaderboards]
 
@@ -42,8 +41,10 @@ class Style:
 
     do_scroll_not_found = False
 
+    dryrun = False
     DEBUG = False
-    sleep_at_end = 0
+    use_sec = True
+    sleep_at_end = 0  # todo)) what's this?
 
     title_deck_table = [
         ["Rank", "Hero", "Unit1", "Unit2", "Unit3", "Unit4", "Unit5"]
@@ -58,6 +59,7 @@ class Style:
                 self.lines_only = list(min, max)
 
     def special_operation(self):
+        pass
         return None
 
 

@@ -3,6 +3,10 @@ import yaml
 import glob
 
 
+rarity = {"legendary": 1, "epic": 2, "rare": 3, "common": 4}
+type = {"Damage": 1, "Support": 2, "Debuff": 3, "Special": 4}
+
+
 class RushRoyaleStats:
     units = {}
     heroes = {}
@@ -44,11 +48,22 @@ class CardBase:
     image_path: str = None
 
     def __init__(self, _key: str, _dict: dict):
-        self.images = list()
-        self.key = _key
+        self.images, self.key = list(), _key
         for _k, _v in _dict.items():
             setattr(self, _k, _v)
         self.key_max = f"{self.key}(Max)"
+
+    def __lt__(self, other) -> bool:
+        if self.rating() == other.rating():
+            return self.name < other.name
+        else:
+            return self.rating() < other.rating()
+
+    def __gt__(self, other) -> bool:
+        return not self.__lt__(self, other)
+
+    def __str__(self) -> str:
+        return f"{self.name}"
 
     def read_images(self):
         self.images = list()
@@ -57,27 +72,51 @@ class CardBase:
             self.images.append(_i.replace('/', '\\'))
         sorted(self.images)
 
+    def rating(self) -> int:
+        return 0
+
+    def create_my_card(self, _imgs: list) -> 'CardBase':
+        pass
+
 
 class Unit(CardBase):
     type: str = None
     toxic: bool = False
     image_path: str = "images/unit"
+    mana_max: int = 5
 
-    def __init__(self, _key: str, _dict: dict):
-        super().__init__(_key, _dict)
+    def rating(self) -> int:
+        # 1. Legendary * Damage -> Mana(Rariry -> Type) -> NoMana(R -> T)
+        # 2. Type : Damage -> Support -> Debuff -> Special
+        # 3. No Mana Legies : Scrapper, Summoner
+        _rate = 20000
+        if all([self.rarity == 'legendary', self.type == 'Damage']):
+            _rate = 10000
+        elif 2 < self.mana_max:
+            _rate += rarity[self.rarity] * 10
+            _rate += type[self.type]
+        else:
+            _rate += rarity[self.rarity] * 1000
+            _rate += type[self.type] * 10
+        return _rate
 
-    def read_images(self):
-        super().read_images()
+    def create_my_card(self, _imgs: list) -> 'Unit':
+        _m = MyUnit()
+        _m.create_from(self, _imgs)
+        return _m
 
 
 class Hero(CardBase):
     image_path: str = "images/hero"
 
-    def __init__(self, _key: str, _dict: dict):
-        super().__init__(_key, _dict)
+    def rating(self) -> int:
+        # 1. By rarity
+        return rarity[self.rarity]
 
-    def read_images(self):
-        super().read_images()
+    def create_my_card(self, _imgs: list) -> 'Hero':
+        _m = MyHero()
+        _m.create_from(self, _imgs)
+        return _m
 
 
 class MyUnit(Unit):
@@ -85,7 +124,37 @@ class MyUnit(Unit):
     pos = None
 
     def __init__(self):
+        self.__name = ''
+        self.__name_jp = ''
         pass
+
+    @property
+    def name(self):
+        if self.level == 15:
+            return f"{self.__name}(Max)"
+        else:
+            return self.__name
+
+    @name.setter
+    def name(self, name):
+        self.__name = name
+
+    @property
+    def name_jp(self):
+        if self.level == 15:
+            return f"{self.__name_jp}(Max)"
+        else:
+            return self.__name_jp
+
+    @name_jp.setter
+    def name_jp(self, name_jp):
+        self.__name_jp = name_jp
+
+    def create_from(self, _c: CardBase, _imgs: list) -> 'MyUnit':
+        for _k, _v in vars(_c).items():
+            setattr(self, _k, _v)
+        if [_i for _i in _imgs if ("Max" in _i) & (_i in self.images)]:
+            self.level = 15
 
 
 class MyHero(Hero):
@@ -93,6 +162,19 @@ class MyHero(Hero):
 
     def __init__(self):
         pass
+
+    def name(self):
+        if self.level == 20:
+            return f"{self.name}(Max)"
+        else:
+            return self.name
+
+    def name_jp(self):
+        pass
+
+    def create_from(self, _c: CardBase, _imgs: list) -> 'MyHero':
+        for _k, _v in vars(_c).items():
+            setattr(self, _k, _v)
 
 
 class Deck:
