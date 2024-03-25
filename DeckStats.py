@@ -8,7 +8,7 @@ from modules.gsheet import Worksheet, Spreadsheet
 from modules.utils import Utils as ut
 from modules.rushroyale_stats import RushRoyaleStats
 
-import pdb
+# import pdb
 
 
 def set_argument_parser():
@@ -124,13 +124,12 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict) -> (int, list):
             # pdb.set_trace()
             _ln = _i + 1
             _deck = [_ln]
-            all_deck.append([_ln, _deck[0], _deck[1]])
             if _s.lines_only and (_ln not in _s.lines_only):
                 continue
-            _format = _f['normal']  # _formatを使いたい
             if len(_d[0]) != 1 or len(_d[1]) != 5:
                 error_count += 1
-                _deck[0], _format = f"!ERROR! - {_deck[0]}", _f['error']
+                _deck[0] = f"!ERROR! - {_deck[0]}"
+            all_deck.append([_deck[0], _d[0], _d[1]])
             _deck += [str(_e) for _e in (["-"] if len(_d[0]) != 1 else _d[0])]
             _deck += [str(_e) for _e in _d[1] + ["-"] * (5 - len(_d[1]))]
             print(_deck)

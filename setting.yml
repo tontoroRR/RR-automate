@@ -8,7 +8,7 @@ style:
   lines_range: 
     min: 0
     max: 0
-  use_sec: false
+  use_sec: true
 
 format:
   normal:
