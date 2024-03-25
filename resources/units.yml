@@ -242,9 +242,9 @@ unit:
     name: Frost
     type: Debuff
     name_jp: フロスト
-  Harleyquin:
+  Harlequin:
     rarity: legendary
-    name: Harleyquin
+    name: Harlequin
     type: Special
     name_jp: ハーレクイン
   Inquisitor:
