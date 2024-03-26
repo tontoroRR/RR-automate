@@ -21,3 +21,8 @@ format:
       red: 1.0
       green: 0.0
       blue: 0.0
+  summary_header:
+    backgroundColor:
+      red: 0.8
+      green: 0.9
+      blue: 0.9
