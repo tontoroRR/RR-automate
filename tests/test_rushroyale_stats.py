@@ -148,3 +148,10 @@ class TestRushRoyaleStats:
         rr.setup()
         assert len(rr.heroes) == 13
         assert len(rr.units) == 67
+
+    def test_all_units(self):
+        rr = RushRoyaleStats()
+        rr.setup()
+        for u in rr.units.values():
+            for i in u.images:
+                assert rf"{u.rarity}\{u.key}".lower() in i.lower()

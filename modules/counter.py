@@ -80,11 +80,14 @@ class Counter:
                 if list(set(_c.images) & set(_founds))
                 # if any([(_i in _c.images) for _i in _founds])
             ]
-            if len(_cards) == _count:
+            if _count <= len(_cards):
                 break
             else:
-                print(f"\033[33mMissing some: \033[41m{_cards}\033[0m")
-                # TODO)) : 見つかったcardは_imagesから省く
+                _p_cards = [str(_c) for _c in _cards]
+                err_msg = "\033[33mMissing some:\033[0m "
+                err_msg += f"\033[41m{_p_cards}\033[0m"
+                print(err_msg)
+                # TODO)): 見つかったcardは_imagesから省く
             self.op.CONFIDENCE -= 0.1
         if 0 < _retry:
             print(f"\033[33mError count: \033[41m{_retry}\033[0m")

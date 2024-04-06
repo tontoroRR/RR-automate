@@ -67,7 +67,7 @@ class CardBase:
 
     def read_images(self):
         self.images = list()
-        globname = f"{self.image_path}/**/*{self.key}*.png"
+        globname = f"{self.image_path}/{self.rarity}/{self.key}*.png"
         for _i in glob.glob(globname):
             self.images.append(_i.replace('/', '\\'))
         sorted(self.images)
