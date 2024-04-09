@@ -1,0 +1,60 @@
+decks:
+  -
+    hero:
+      name: Zeus
+      level: 20
+    units:
+      -
+        name: Riding Hood
+        level: 15
+        talents:
+          -
+            rank: 1
+            name: Alpha Wolf
+          -
+            rank: 2
+            name: Wound Licking
+          -
+            rank: 3
+            name: Neutralization
+          -
+            rank: 4
+            name: Treats for Grandma
+      -
+        name: Knight Status
+        level: 15
+        talents:
+          -
+            rank: 1
+            Name: Sharpened Spear
+          -
+            rank: 2
+            name: Barrier
+          -
+            rank: 3
+            name: Stone Legion
+          -
+            rank: 4
+            name: Soul of a Warrior
+      -
+        name: Dryad
+        level: 15
+        talents:
+          -
+            rank: 1
+            name: Fairy of Rage
+          -
+            rank: 2
+            name: Gift of Nature
+          -
+            rank: 3
+            name: Poisonous Fruit
+          -
+            rank: 4
+            name: Spirits of the Forest
+      -
+        name: Witch
+        level: 15
+      -
+        name: Trapper
+        level: 15
