@@ -80,7 +80,7 @@ class Counter:
                 if list(set(_c.images) & set(_founds))
                 # if any([(_i in _c.images) for _i in _founds])
             ]
-            if len(_cards) == _count:
+            if _count <= len(_cards):
                 break
             else:
                 _s_cards = list(map(str, _cards))
