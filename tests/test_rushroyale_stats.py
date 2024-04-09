@@ -118,6 +118,7 @@ class TestMyHero:
                     r"images\unit\legendary\SpiritMasterMax.png",
                 ]
         my_ks = ks.create_my_card(_imgs)
+        my_ks.level = 15
         assert my_ks.name == "Knight Statue(Max)"
         assert str(my_ks) == "Knight Statue(Max)"
         assert my_ks.name_jp == "騎士像(Max)"
@@ -142,9 +143,14 @@ class TestMyUnit:
 
 
 class TestRushRoyaleStats:
-    # TODO))
     def test_setup(self):
         rr = RushRoyaleStats()
         rr.setup()
         assert len(rr.heroes) == 13
+        for h in rr.heroes.values():
+            for img in h.images:
+                assert rf"{h.rarity}\{h.name.replace(' ', '')}" in img
         assert len(rr.units) == 67
+        for u in rr.units.values():
+            for img in u.images:
+                assert rf"{u.rarity}\{u.name.replace(' ', '')}" in img
