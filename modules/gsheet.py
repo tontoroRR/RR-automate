@@ -29,7 +29,7 @@ class Spreadsheet:
     def create_sheet(self, name: str):
         try:
             return Worksheet(self.sheet.add_worksheet(
-                title=name, rows=306, cols=310))
+                title=name, rows=306, cols=310, index=0))
         except gspread.exceptions.WorksheetNotFound:
             return False
 
