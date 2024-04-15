@@ -56,6 +56,7 @@ class TestUnit:
         assert h.type == 'Damage'
         assert h.name_jp == 'アルケミスト'
         assert h.images == sorted([
+            r'images\unit\rare\Alchemist.png',
             r'images\unit\rare\AlchemistMax.png',
             r'images\unit\rare\AlchemistMax_ALT_.png',
         ])
@@ -72,9 +73,9 @@ class TestUnit:
                'rarity': 'legendary', 'type': 'Damage',
                'toxic': False}
         monk = Unit('Monk', _d3)
-        assert rogue.rating() == 20041
+        assert rogue.rating() == 10041
         assert shaman.rating() == 20014
-        assert monk.rating() == 10000
+        assert monk.rating() == 10011
 
     def test_sorted(self):
         _d1 = {'key': 'KnightStatue', 'name': 'Knight Statue',
@@ -146,7 +147,7 @@ class TestRushRoyaleStats:
     def test_setup(self):
         rr = RushRoyaleStats()
         rr.setup()
-        assert len(rr.heroes) == 13
+        assert len(rr.heroes) == 14
         for h in rr.heroes.values():
             for img in h.images:
                 assert rf"{h.rarity}\{h.name.replace(' ', '')}" in img

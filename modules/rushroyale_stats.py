@@ -89,10 +89,17 @@ class Unit(CardBase):
         # 1. Legendary * Damage -> Mana(Rariry -> Type) -> NoMana(R -> T)
         # 2. Type : Damage -> Support -> Debuff -> Special
         # 3. No Mana Legies : Scrapper, Summoner
-        _rate = 20000
+        """
         if all([self.rarity == 'legendary', self.type == 'Damage']):
             _rate = 10000
-        elif 2 < self.mana_max:
+            return _rate
+        """
+        if self.type == 'Damage':
+            _rate = 10000
+        else:
+            _rate = 20000
+
+        if 2 < self.mana_max:
             _rate += rarity[self.rarity] * 10
             _rate += type[self.type]
         else:
