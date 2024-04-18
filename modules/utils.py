@@ -4,6 +4,8 @@ from datetime import datetime
 
 
 class Utils:
+    ERROR_IMAGE_PATH = None
+
     @staticmethod
     def convert_int_to_col(n: int) -> str:
         ai = ord("A")
@@ -27,10 +29,11 @@ class Utils:
 
     @staticmethod
     def take_screenshot(_num: int = 0, _cursor: bool = False, _region=None):
+        path = Utils.ERROR_IMAGE_PATH or r'.\errors'
         if _region:
             _img = pyautogui.screenshot(region=_region)
         else:
             _img = pyautogui.screenshot(region=_region)
         dt = datetime.now().strftime('%Y%m%d_%H%M%S')
-        name = f"U:\\home\\phoi\\errors\\{dt}_{str(_num).zfill(4)}.png"
+        name = rf"{path}\{dt}_{str(_num).zfill(4)}.png"
         _img.save(name)

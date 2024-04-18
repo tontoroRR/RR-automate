@@ -5,6 +5,12 @@ hero:
     name_jp: トレーナー
     unlock:
       arena: 1
+  Captain:
+    rarity: common
+    name: Captain
+    name_jp: 船長
+    unlock:
+      arena: 1
   Bestie:
     rarity: common
     name: Bestie
