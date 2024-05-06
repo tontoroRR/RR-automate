@@ -1,17 +1,13 @@
 import time
 import pyautogui
 from ctypes import windll
-
 from typing import overload
-
 import threading
 from collections import deque
 
 from modules.styles import Style
 from modules.utils import Utils as ut
 from modules.rushroyale_stats import CardBase
-
-import pdb
 
 pyautogui.PAUSE = 0.2
 
@@ -58,16 +54,10 @@ class Counter:
 
     def _set_card(self, _card: CardBase, _imgs: str) -> CardBase:
         return _card.create_my_card(_imgs)
-        """
-        match type(_card):
-            case RushRoyaleStats.Hero:
-                myhero = MyHero()
-                pass
-            case RushRoyaleStats.Unit:
-                pass
-            case _:
-                pass
-        """
+
+    def _eliminate_founds(self, _images, _founds):
+        # TODO: 見つかったcardは_imagesから省く
+        pass
 
     def _find_cards(self, _dict: dict, _count: int) -> list:
         _images = sum([_d.images for _d in _dict.values()], [])
@@ -78,7 +68,6 @@ class Counter:
                 self._set_card(_c, list(set(_c.images) & set(_founds)))
                 for _c in _dict.values()
                 if list(set(_c.images) & set(_founds))
-                # if any([(_i in _c.images) for _i in _founds])
             ]
             if _count <= len(_cards):
                 break
@@ -86,7 +75,8 @@ class Counter:
                 _s_cards = list(map(str, _cards))
                 err_msg = "\033[33mMissing some:\033[0m "
                 print(err_msg + f"\033[41m{_s_cards}\033[0m")
-                # TODO)) : 見つかったcardは_imagesから省く
+                ut.log_exception()
+                self._eliminate_founds(_images, _founds)
             self.op.CONFIDENCE -= 0.1
         if 0 < _retry:
             print(f"\033[33mError count: \033[41m{_retry}\033[0m")
@@ -213,13 +203,10 @@ class Operation:
                     _img, region=_region, confidence=self.CONFIDENCE
                 )
                 if xy is not None:
-                    break
+                    return xy
             except pyautogui.ImageNotFoundException:
                 pass
-        if xy is not None:
-            return xy
-        else:
-            raise pyautogui.ImageNotFoundException(_imgs, _img)
+        raise pyautogui.ImageNotFoundException(_imgs, _img)
 
     def __exists(self, _img: str, _wait=WAIT, _region=REGION) -> bool:
         _wait = _wait * self.WTA
@@ -231,7 +218,6 @@ class Operation:
                 return True
             except pyautogui.ImageNotFoundException:
                 self.__dp(_img, f" not found {_i}")
-                pass
         return False
 
     def __click(self, _img: str, _shift: tuple = (0, 0)):

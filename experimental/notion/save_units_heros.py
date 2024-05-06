@@ -2,8 +2,9 @@ import os
 from dotenv import load_dotenv as ldt
 from notion_client import Client
 from pprint import pprint 
-import pdb
 from modules.rushroyale_stats import RushRoyaleStats, Unit
+ 
+import pdb
 
 rr = RushRoyaleStats()
 rr.create_units()

@@ -1,37 +1,36 @@
 import re
-import pdb
 
 
 class BtnImage:
-    menu = "images/menuBtn.png"
-    menuWithInfo = "images/menuBtnInfo.png"
-    backArrow = "images/backarrowBtn.png"
-    leaderBoards = "images/leaderboards.png"
-    close = "images/closeBtn.png"
-    maxCritTab = "images/maxCritTab.png"
-    totalTrophyTab = "images/totalTrophyTab.png"
-    bottomBattle = "images/bottomBattleBtn.png"
+    menu = "resources/images/menuBtn.png"
+    menuWithInfo = "resources/images/menuBtnInfo.png"
+    backArrow = "resources/images/backarrowBtn.png"
+    leaderBoards = "resources/images/leaderboards.png"
+    close = "resources/images/closeBtn.png"
+    maxCritTab = "resources/images/maxCritTab.png"
+    totalTrophyTab = "resources/images/totalTrophyTab.png"
+    bottomBattle = "resources/images/bottomBattleBtn.png"
 
 
 class LabelImage:
-    totalTrophy = "images/totaltrophies.png"
-    totalTrophyBadge1st = "images/totalTrophyBadge1st.png"
-    totalTrophyBadge1st_ALT = "images/totalTrophyBadge1st_ALT_.png"
-    maxCrit = "images/maxCrit.png"
-    maxCritBadge1st = "images/maxCrit1stBadge.png"
-    cards = ["images/cardsLabel.png",
-             "images/cardsLabel_ALT_.png",
-             "images/cardsLabel_ALT__ALT_.png",
+    totalTrophy = "resources/images/totaltrophies.png"
+    totalTrophyBadge1st = "resources/images/totalTrophyBadge1st.png"
+    totalTrophyBadge1st_ALT = "resources/images/totalTrophyBadge1st_ALT_.png"
+    maxCrit = "resources/images/maxCrit.png"
+    maxCritBadge1st = "resources/images/maxCrit1stBadge.png"
+    cards = ["resources/images/cardsLabel.png",
+             "resources/images/cardsLabel_ALT_.png",
+             "resources/images/cardsLabel_ALT__ALT_.png",
              ]
-    bestPlayer = "images/bestPlayer.png"
-    top90 = "images/top90.png"
+    bestPlayer = "resources/images/bestPlayer.png"
+    top90 = "resources/images/top90.png"
 
 
 class Converter:
     __CONVERTS: dict = {
         "_ALT_": "",
         # \1 = unit/hero, \2 = rarity, \3 = name
-        "images/(.+)/(.+)/(.+).png": r"\3",
+        "resources/images/(.+)/(.+)/(.+).png": r"\3",
         "Max": "(Max)",
     }
 

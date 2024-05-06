@@ -8,16 +8,6 @@ from modules.gsheet import Worksheet, Spreadsheet
 from modules.utils import Utils as ut
 from modules.rushroyale_stats import RushRoyaleStats
 
-# import pdb
-
-
-def set_argument_parser():
-    pass
-    """
-    _parser = argparse.ArgumentParser()
-    return _parser
-    """
-
 
 def get_format():
     # for google spreadsheet
@@ -42,7 +32,7 @@ def main():
     rr = RushRoyaleStats()
     rr.setup()
     s, f = set_style(rr), get_format()
-    # parser = set_argument_parser()
+    ut.REGION = s.app_region
 
     print(f"Start to catalogue {s.style_type} deck")
 
@@ -137,7 +127,7 @@ def log_decks_to_gsheet(c: Counter, ws: Worksheet, _f: dict) -> (int, list):
         if not _s.dryrun:
             ws.update(ws.start_column + '3', _all_for_gsheet)
     except Exception as e:
-        ut.log_exception(_ln)
+        ut.log_exception(_num=_ln)
         raise e
     return (error_count, all_deck)
 

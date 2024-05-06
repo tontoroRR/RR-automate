@@ -11,7 +11,10 @@ Count up Top100
 ## How to use
 
 1. Copy .env_sample to .env. Set spreadsheet's ID and JSON file name.
-1. Install python modules. ``` > pip install -r requirement ```
+1. Install python modules. ``` > pip install -r requirements.txt ```
+1. Open MyGames Launcher, then start RushRoyale for PC.
+1. Close beginning pop-ups and open "Battle" tab.
+1. Make sure you are in below screen opening.
 1. Run command. ```> python3.exe DeckStatus.py```
 
 ## TODO
@@ -23,6 +26,7 @@ Count up Top100
 * [ ] Dryad, KSはKSが先に来てほしいかDryadが先になってしまう
 * [ ] ユニットの位置情報を記録する
 * [ ] 才能を記録する
+    * [x] 才能の画像はimages/units/talentsにいれた.汎用性を持たせるため、枝分かれの画像部分のみ
 
 ### DONE
 

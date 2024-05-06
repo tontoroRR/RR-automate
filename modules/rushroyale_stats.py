@@ -82,8 +82,9 @@ class CardBase:
 class Unit(CardBase):
     type: str = None
     toxic: bool = False
-    image_path: str = "images/unit"
+    image_path: str = "resources/images/unit"
     mana_max: int = 5
+    talents: list = None
 
     def rating(self) -> int:
         # 1. Legendary * Damage -> Mana(Rariry -> Type) -> NoMana(R -> T)
@@ -114,7 +115,7 @@ class Unit(CardBase):
 
 
 class Hero(CardBase):
-    image_path: str = "images/hero"
+    image_path: str = "resources/images/hero"
 
     def rating(self) -> int:
         # 1. By rarity
@@ -186,7 +187,35 @@ class MyHero(Hero):
 
 class Deck:
     hero = None
-    units: list = None
+    units: list = []
     name: str = None
     critical: int = None
     trophy: int = None
+
+    def __init__(self):
+        pass
+
+    def load(self, _deck: dict, _rrs: 'RushRoyaleStats'):
+        """
+        _deck format
+        { "hero": {"name": "****", "level": nn},
+          "units": [
+            {"name": "****", "level": nn},
+             :
+             :
+          ]
+        }
+        """
+        _h = _deck['hero']
+        for __h in _rrs.heroes.values():
+            if __h.name == _h['name']:
+                self.hero = MyHero()
+                self.hero.create_from(__h, [])
+                self.hero.level = _h['level']
+        for _u in _deck['units']:
+            for __u in _rrs.units.values():
+                if __u.name == _u['name']:
+                    _units = MyUnit()
+                    _units.create_from(__u, [])
+                    _units.level = _u['level']
+                    self.units.append(_units)
