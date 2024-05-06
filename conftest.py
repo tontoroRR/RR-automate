@@ -10,5 +10,4 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 
 
 def pytest_keyboard_interrupt(excinfo):
-    # todo: doesn't work
-    playsound(r'tests\sounds\glass-shatter.wav')
+    pass

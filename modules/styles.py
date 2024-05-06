@@ -16,7 +16,6 @@ class Style:
     heroes = None
     units = None
 
-
     buttonSeq = [menus, btn_leaderboards]
 
     # need to set at child class
@@ -84,8 +83,8 @@ class TopTrophy(Style):
 class PastSeasonLeader(TopTrophy):
     style_type = "Past Season Leader"
 
-    tab = "images/pastLeadersBtn.png"
-    banner = "images/pastTotalTrophies.png"
+    tab = "resources/images/pastLeadersBtn.png"
+    banner = "resources/images/pastTotalTrophies.png"
 
     lines_per_page = 9
     last_line_y = 904
@@ -114,7 +113,7 @@ class MaxCrit(Style):
 
 class RhandumLeague(Style):
     style_type = "Rhandum League"
-    badge1st = "images/rhandumLeague1stBadge.png"
+    badge1st = "resources/images/rhandumLeague1stBadge.png"
 
     line_height = 86
     lines_per_page = 5
@@ -123,13 +122,16 @@ class RhandumLeague(Style):
     adjust_scroll_up = 0.08
     do_scroll_not_found = True
 
-    card_tab = "images/rhandumLeagueTab.png"
+    card_tab = "resources/images/rhandumLeagueTab.png"
 
     def __init__(self):
         self.buttonSeq = [
-            "images/eventTab.png",
-            "images/rhandumLeagueCard.png",
-            "images/rhandumLeagueLabel.png",
+            "resources/images/eventTab.png",
+            [
+                "resources/images/rhandumLeagueCard.png",
+                "resources/images/rhandumLeagueCard_ALT_.png"
+            ],
+            "resources/images/rhandumLeagueLabel.png",
         ]
 
     def special_operation(self):

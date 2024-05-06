@@ -1,4 +1,13 @@
-from modules.rushroyale_stats import Hero, Unit, RushRoyaleStats
+from modules.rushroyale_stats import Hero, Unit, RushRoyaleStats, Deck
+import pytest
+
+
+@pytest.fixture
+def stats():
+    rrs = RushRoyaleStats()
+    rrs.setup()
+    return rrs
+    pass
 
 
 class TestHero:
@@ -140,18 +149,40 @@ class TestMyUnit:
         assert str(my_hero) == "Gadget"
         assert my_hero.name_jp == "ガジェット"
         assert my_hero.level is None
-    pass
 
 
 class TestRushRoyaleStats:
-    def test_setup(self):
-        rr = RushRoyaleStats()
-        rr.setup()
-        assert len(rr.heroes) == 14
-        for h in rr.heroes.values():
+    def test_setup(self, stats):
+        assert len(stats.heroes) == 14
+        for h in stats.heroes.values():
             for img in h.images:
                 assert rf"{h.rarity}\{h.name.replace(' ', '')}" in img
-        assert len(rr.units) == 67
-        for u in rr.units.values():
+        assert len(stats.units) == 67
+        for u in stats.units.values():
             for img in u.images:
                 assert rf"{u.rarity}\{u.name.replace(' ', '')}" in img
+
+
+class TestDeck:
+    def test__loadDeck(self, stats):
+        d = {
+            'hero': {'name': 'Zeus', 'level': 20},
+            'units': [
+                {'name': 'Riding Hood', 'level': 15},
+                {'name': 'Knight Statue', 'level': 15},
+                {'name': 'Trapper', 'level': 10},
+            ]
+        }
+        deck = Deck()
+        deck.load(d, stats)
+        assert deck.hero.name == 'Zeus'
+        assert deck.hero.level == 20
+        assert deck.units[0].name == 'Riding Hood(Max)'
+        assert deck.units[0].level == 15
+        assert deck.units[1].name == 'Knight Statue(Max)'
+        assert deck.units[1].level == 15
+        assert deck.units[2].name == 'Trapper'
+        assert deck.units[2].level == 10
+
+    def test__loadDeck_(self, stats):
+        pass
