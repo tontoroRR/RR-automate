@@ -1,4 +1,5 @@
-from modules.rushroyale_stats import Hero, Unit, RushRoyaleStats, Deck
+from modules.rushroyale_stats \
+        import Hero, Unit, RushRoyaleStats, Deck, CardBase
 import pytest
 
 
@@ -27,7 +28,7 @@ class TestHero:
         assert h.name_jp == 'ガジェット'
         assert h.unlock == {'arena': 7}
         assert h.images == [
-            'images/hero/epic/Gadget.png'.replace('/', '\\'),
+            r'resources\images\hero\epic\Gadget.png',
         ]
 
     def test__rating(self):
@@ -65,9 +66,9 @@ class TestUnit:
         assert h.type == 'Damage'
         assert h.name_jp == 'アルケミスト'
         assert h.images == sorted([
-            r'images\unit\rare\Alchemist.png',
-            r'images\unit\rare\AlchemistMax.png',
-            r'images\unit\rare\AlchemistMax_ALT_.png',
+            r'resources\images\unit\rare\Alchemist.png',
+            r'resources\images\unit\rare\AlchemistMax.png',
+            r'resources\images\unit\rare\AlchemistMax_ALT_.png',
         ])
 
     def test__rating(self):
@@ -116,16 +117,16 @@ class TestUnit:
         assert u == [sm, ks, hq, chem, scr]
 
 
-class TestMyHero:
+class TestMyUnit:
     def test__init__(self):
         _d = {'key': 'KnightStatue', 'name': 'Knight Statue',
               'name_jp': '騎士像', 'rarity': 'legendary', 'type': 'Support'}
         ks = Unit('KnightStatue', _d)
         ks.read_images()
         _imgs = [
-                    r"images\unit\legendary\KnightStatue.png",
-                    r"images\unit\legendary\KnightStatueMax.png",
-                    r"images\unit\legendary\SpiritMasterMax.png",
+                    r"resources\images\unit\legendary\KnightStatue.png",
+                    r"resources\images\unit\legendary\KnightStatueMax.png",
+                    r"resources\images\unit\legendary\SpiritMasterMax.png",
                 ]
         my_ks = ks.create_my_card(_imgs)
         my_ks.level = 15
@@ -135,14 +136,14 @@ class TestMyHero:
         assert my_ks.level == 15
 
 
-class TestMyUnit:
+class TestMyHero:
     def test__init__(self):
         gadget = Hero('Gadget',
                       {'key': 'Gadget', 'name': 'Gadget',
                        'name_jp': 'ガジェット', 'rarity': 'epic'})
         gadget.read_images()
         _imgs = [
-                    r"images\hero\epic\Gadget.png",
+                    r"resources\images\hero\epic\Gadget.png",
                 ]
         my_hero = gadget.create_my_card(_imgs)
         assert my_hero.name == "Gadget"
@@ -153,14 +154,17 @@ class TestMyUnit:
 
 class TestRushRoyaleStats:
     def test_setup(self, stats):
-        assert len(stats.heroes) == 14
+        assert len(stats.heroes) == 15
         for h in stats.heroes.values():
             for img in h.images:
-                assert rf"{h.rarity}\{h.name.replace(' ', '')}" in img
-        assert len(stats.units) == 67
+                assert self.__card_name(h) in img.lower()
+        assert len(stats.units) == 68
         for u in stats.units.values():
             for img in u.images:
-                assert rf"{u.rarity}\{u.name.replace(' ', '')}" in img
+                assert self.__card_name(u) in img.lower()
+
+    def __card_name(self, c: CardBase):
+        return rf"{c.rarity}\{c.name.replace(' ', '')}".lower()
 
 
 class TestDeck:
