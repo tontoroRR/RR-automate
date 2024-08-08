@@ -83,3 +83,9 @@ hero:
     name_jp: ネクロマンサー
     unlock:
       arena: 5
+  Fortuna:
+    rarity: legendary
+    name: Fortuna
+    name_jp: フォーテュナ
+    unlock:
+      arena: 6

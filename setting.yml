@@ -1,6 +1,6 @@
 style:
   target_module: TopTrophy # TopTrophy / MaxCrit / RhandumLeague / PastSeasonLeader
-  target_deck: PvP # PvP / Coop / Tournament / RhandumLuague
+  target_deck: PvP # PvP / Coop / Tournament / RhandumLeague
   wait_time_adjust: 1 # 5 for slow PC
   total_line: 100
   lines_only: []

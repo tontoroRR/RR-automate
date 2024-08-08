@@ -7,7 +7,7 @@ from collections import deque
 
 from modules.styles import Style
 from modules.utils import Utils as ut
-from modules.rushroyale_stats import CardBase
+from modules.rushroyale_stats import CardBase, MyCardBase
 
 pyautogui.PAUSE = 0.2
 
@@ -331,14 +331,14 @@ class Operation:
         pyautogui.mouseUp()
 
     @overload
-    def find_any_thread(self, _img: list, _wait: float = WAIT) -> list:
+    def find_any_thread(self, _img: list, _wait: float = WAIT) -> list[MyCardBase]:
         pass
 
     @overload
-    def find_any_thread(self, _img: str, _wait: float = WAIT) -> list:
+    def find_any_thread(self, _img: str, _wait: float = WAIT) -> list[MyCardBase]:
         pass
 
-    def find_any_thread(self, _img, _wait: float = WAIT) -> list:
+    def find_any_thread(self, _img, _wait: float = WAIT) -> list[MyCardBase]:
         _imgs = _img if isinstance(_img, list) else [_img]
 
         def find_worker(_i: str, _d: list):

@@ -116,7 +116,7 @@ class RhandumLeague(Style):
     badge1st = "resources/images/rhandumLeague1stBadge.png"
 
     line_height = 86
-    lines_per_page = 5
+    lines_per_page = 4
     last_line_y = 480
     total_line = 1
     adjust_scroll_up = 0.08
