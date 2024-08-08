@@ -7,6 +7,14 @@ rarity = {"legendary": 1, "epic": 2, "rare": 3, "common": 4}
 type = {"Damage": 1, "Support": 2, "Debuff": 3, "Special": 4}
 
 
+class Comparable:
+    def __lt__(self, other) -> bool:
+        pass
+
+    def __gt__(self, other) -> bool:
+        pass
+
+
 class RushRoyaleStats:
     units = {}
     heroes = {}
@@ -38,7 +46,7 @@ class RushRoyaleStats:
             _h.read_images()
 
 
-class CardBase:
+class CardBase(Comparable):
     key: str = None
     key_max: str = None
     rarity: str = None
@@ -60,7 +68,7 @@ class CardBase:
             return self.rating() < other.rating()
 
     def __gt__(self, other) -> bool:
-        return not self.__lt__(self, other)
+        return not self.__lt__(other)
 
     def __str__(self) -> str:
         return f"{self.name}"
@@ -127,17 +135,25 @@ class Hero(CardBase):
         return _m
 
 
-class MyUnit(Unit):
+class MyCardBase(Comparable):
     level: int = None
-    pos = None
+    pos: (int, int) = None
+    card: CardBase = None
 
     def __init__(self):
-        self.__name = ''
-        self.__name_jp = ''
         pass
 
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+    def __lt__(self, other) -> bool:
+        return self.card.__lt__(other.card)
+
+    def __gt__(self, other) -> bool:
+        return not self.__lt__(other)
+
     @property
-    def name(self):
+    def name(self) -> str:
         if self.level == 15:
             return f"{self.__name}(Max)"
         else:
@@ -148,7 +164,7 @@ class MyUnit(Unit):
         self.__name = name
 
     @property
-    def name_jp(self):
+    def name_jp(self) -> str:
         if self.level == 15:
             return f"{self.__name_jp}(Max)"
         else:
@@ -158,29 +174,34 @@ class MyUnit(Unit):
     def name_jp(self, name_jp):
         self.__name_jp = name_jp
 
+    def create_from(self, _c: CardBase, _imgs: list) -> 'MyCardBase':
+        pass
+
+
+class MyUnit(MyCardBase):
+    level: int = None
+    pos: (int, int) = None
+
+    def __init__(self):
+        super().__init__()
+
     def create_from(self, _c: CardBase, _imgs: list) -> 'MyUnit':
+        self.card = _c
         for _k, _v in vars(_c).items():
             setattr(self, _k, _v)
         if [_i for _i in _imgs if ("Max" in _i) & (_i in self.images)]:
             self.level = 15
 
 
-class MyHero(Hero):
+class MyHero(MyCardBase):
     level: int = None
+    pos: (int, int) = None
 
     def __init__(self):
-        pass
-
-    def name(self):
-        if self.level == 20:
-            return f"{self.name}(Max)"
-        else:
-            return self.name
-
-    def name_jp(self):
-        pass
+        super().__init__()
 
     def create_from(self, _c: CardBase, _imgs: list) -> 'MyHero':
+        self.card = _c
         for _k, _v in vars(_c).items():
             setattr(self, _k, _v)
 

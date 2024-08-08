@@ -189,6 +189,12 @@ unit:
     type: Damage
     name_jp: バンシー
     mana_max: 2
+  Bard:
+    rarity: legendary
+    name: Bard
+    type: Damage
+    name_jp: 吟遊詩人
+    mana_max: 2
   Bruiser:
     rarity: legendary
     name: Bruiser
